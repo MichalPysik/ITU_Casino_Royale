@@ -1,5 +1,6 @@
 import random
 
+
 def generovani():
     numbers = [1,2,3,4,5,6,7,8,9,10]
     probability = [0.3,0.2,0.15,0.15,0.05,0.05,0.03,0.03,0.02,0.02]
