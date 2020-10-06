@@ -12,7 +12,7 @@ def main():
         #numbs = automat.automat(us, 1)
         #print(numbs)
         time.sleep(0.5)
-        numbs = ruleta.ruleta(1,0,us)
+        numbs = ruleta.ruleta(1,"black",us)
         print("ruleta: ",numbs)
         print(us.get_name(), us.get_balance())
 
