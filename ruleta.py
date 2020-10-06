@@ -22,24 +22,24 @@ def ruleta(bet, choice, user):
         else:
             user.sub_balance(bet)
     elif isinstance(choice, str) == True:
-        if bet == "red":
+        if choice == "red":
             try:
                 cervena.index(numb)
                 user.add_balance(bet)
             except:
                 user.sub_balance(bet)
-        elif bet == "black":
+        elif choice == "black":
             try:
                 cerna.index(numb)
                 user.add_balance(bet)
             except:
                 user.sub_balance(bet)
-        elif bet == "odd":
+        elif choice == "odd":
             if numb % 2 == 1:
                 user.add_balance(bet)
             else:
                 user.sub_balance(bet)
-        elif bet == "even":
+        elif choice == "even":
             if numb % 2 == 0 and numb != 0:
                 user.add_balance(bet)
             else:
