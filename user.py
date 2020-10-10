@@ -1,4 +1,43 @@
 import time
+import pickle
+import os
+
+
+class Skin:
+    def __init__(self, Id, Type, path, price, name):
+        self.id = Id
+        self.type = Type
+        self.path = path
+        self.price = price
+        self.name = name
+        self.active = False
+        return
+
+
+    # return path to file with skin
+    def get_path(self):
+        return self.path
+
+    # change price to new price
+    def change_price(self, price):
+        self.price = price;
+        return
+
+    # get price of skin
+    def get_price(self):
+        return self.price
+
+    # set state of skin
+    def set_active(self, state):
+        self.active = state
+
+    # return True if skin is active
+    def is_active(self):
+        return self.active
+
+    # return name of skin
+    def get_name(self):
+        return self.name
 
 
 # define user which has all needed data saved internally
@@ -6,10 +45,8 @@ class User:
     def __init__(self, name):
         self.name = name
         self.balance = 100
-        self.kostka = 1
-        self.automat = 1
-        self.ruleta = 1
         self.created = time.time()
+        self.skins = []
         return
 
     # add balance to user
@@ -33,3 +70,32 @@ class User:
     # return name of user
     def get_name(self):
         return self.name
+
+    # add new skin to user
+    def add_skin(self, skin):
+        self.skins.append(skin)
+        return
+
+    # return users skins
+    def get_skins(self):
+        return self.skins
+
+    def save(self):
+        temp = 'SAVE/' + self.get_name()
+        temp_bkp = temp + '.bkp'
+        try:
+            os.rename(temp, temp_bkp)
+        except:
+            pass
+        try:
+            open(temp,'w')
+        except:
+            os.rename(temp_bkp, temp)
+        try:
+            pickle.dump(self, temp, os.HIGHEST_PROTOCOL)
+        except:
+            os.rename(temp_bkp, temp)
+        try:
+            os.remove(temp_bkp)
+        except:
+            pass
