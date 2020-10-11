@@ -2,6 +2,23 @@ import time
 import pickle
 import os
 
+def get_users():
+    users = []
+    try:
+        files = os.listdir('./SAVE/')
+    except:
+        print("Can´t open SAVE dir")
+        exit(1)
+    for i in files:
+        i = './SAVE/' + i
+        print(i)
+        try:
+            load_user = pickle.load(open(i,'rb'))
+            users.append(load_user)
+        except:
+            print("Cant load file:", i)
+    return users
+
 
 class Skin:
     def __init__(self, Id, Type, path, price, name):
@@ -53,6 +70,7 @@ class User:
     # return new balance
     def add_balance(self, add):
         self.balance += add
+        self.save()
         return self.balance
 
     # get users balance
@@ -64,6 +82,7 @@ class User:
     # ret actual balance
     def sub_balance(self, sub):
         self.balance -= sub
+        self.save()
         return self.balance
 
     # get users name
@@ -74,6 +93,7 @@ class User:
     # add new skin to user
     def add_skin(self, skin):
         self.skins.append(skin)
+        self.save()
         return
 
     # return users skins
@@ -81,21 +101,27 @@ class User:
         return self.skins
 
     def save(self):
-        temp = 'SAVE/' + self.get_name()
+        temp = 'SAVE/' + self.get_name() + '.pkl'
         temp_bkp = temp + '.bkp'
         try:
             os.rename(temp, temp_bkp)
         except:
             pass
         try:
-            open(temp,'w')
+            #with open(temp, 'wb') as f:
+            #    pickle.dump(self, f)
+            #file = open(temp,'w')
+            pass
         except:
+            pass
             os.rename(temp_bkp, temp)
         try:
-            pickle.dump(self, temp, os.HIGHEST_PROTOCOL)
+            pickle.dump(self, open(temp,'wb'), pickle.HIGHEST_PROTOCOL)
         except:
-            os.rename(temp_bkp, temp)
+            print("Can´t dump pickle to file:",temp)
+            exit(1)
         try:
             os.remove(temp_bkp)
         except:
             pass
+        return
