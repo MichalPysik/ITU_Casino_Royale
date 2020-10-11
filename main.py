@@ -3,7 +3,7 @@ import automat
 import time
 import ruleta
 import pickle
-
+import dice
 
 def main():
 
