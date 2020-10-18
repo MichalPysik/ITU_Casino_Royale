@@ -21,7 +21,7 @@ def main():
         #numbs = automat.automat(us, 1)
         #print(numbs)
         time.sleep(0.0005)
-        numbs = ruleta.ruleta(1,"black",us)
+        numbs = ruleta.ruleta(us,1,"black")
         print("ruleta: ",numbs)
         print(us.get_name(), us.get_balance())
         us.add_balance(10000)
