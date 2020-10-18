@@ -21,18 +21,17 @@ def gui_kostky():
 def gui_ruleta():
     pass
 
-
 def action_automat():
     global us
     automat.automat(us,10)
     return
-
 
 def gui_automat():
 
     global main_win
     global widget
     global us
+
 
     #new widget to replace main menu
     aut_wid = QWidget(main_win)
@@ -119,6 +118,7 @@ def main():
     main_win = QMainWindow()
     main_win.setGeometry(0, 0, 1000, 1000)
 
+
     menubar = QMenuBar(main_win)
     menu = QMenu("Change user")
     menu2 = QMenu("Menu")
@@ -132,6 +132,7 @@ def main():
 
     main_win.setMenuBar(menubar)
 
+
     widget = QWidget()
     main_win.setCentralWidget(widget)
     widget.setGeometry(500, 500, 1000, 1000)
@@ -141,9 +142,11 @@ def main():
     layout = QGridLayout(widget)
     widget.setLayout(layout)
 
+    
     grid_games = QGridLayout()
     layout.addLayout(grid_games, 2, 1)
 
+    
     title = QLabel(widget)
     title.setFont(QFont('Arial', 50))
     title.setText("Casino Royale")
@@ -176,6 +179,7 @@ def main():
     btn_automat.setStyleSheet("background-color: red")
     btn_automat.clicked.connect(gui_automat)
     grid_games.addWidget(btn_automat, 1, 3)
+
 
     main_win.show()
 
