@@ -3,6 +3,7 @@ from games import *
 import sys
 from PyQt5.QtWidgets import QApplication, QWidget, QLabel, QPushButton, QGridLayout, QSizePolicy, QMainWindow, QMenuBar, \
      QSpinBox, QTableWidget, QAction
+
 from PyQt5.QtGui import QFont
 
 main_win = ""
@@ -117,9 +118,6 @@ def gui_automat():
     # set layout as main layout
     aut_wid.setLayout(layout2)
 
-    # dummy = QSpacerItem(0,0,QSizePolicy.Ignored,QSizePolicy.Ignored)
-    # layout2.addItem(dummy, 1, 1)
-
     # set layout for slots view
     layout2.addLayout(layout, 2, 2)
     # set layout for control bar
@@ -134,26 +132,34 @@ def gui_automat():
     table.verticalHeader().hide()
     layout2.addWidget(table, 2, 3)
 
+
     Slot1 = QWidget(aut_wid)
     Slot1.setGeometry(0, 0, 150, 150)
     # Slot1.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
+
     Slot1.setStyleSheet('.QWidget { border: 2px solid black; background-color: white } ')
     layout.addWidget(Slot1, 1, 1)
 
     Slot2 = QWidget(aut_wid)
+
     Slot2.setGeometry(0, 0, 150, 150)
+
     Slot2.setStyleSheet(".QWidget { border: 2px solid black; background-color: white } ")
     layout.addWidget(Slot2, 1, 2)
 
     Slot3 = QWidget(aut_wid)
+
     Slot3.setGeometry(0, 0, 150, 150)
+
     Slot3.setStyleSheet(".QWidget { border: 2px solid black; background-color: white } ")
     layout.addWidget(Slot3, 1, 3)
 
     btn = QPushButton(aut_wid)
     btn.clicked.connect(action_automat)
     btn.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
+
     btn.setGeometry(0, 0, 70, 40)
+
     layout3.addWidget(btn, 1, 1)
 
     bet = QSpinBox(aut_wid)
@@ -167,6 +173,7 @@ def gui_automat():
     layout3.addWidget(bet_text, 1, 2)
 
     main_win.setCentralWidget(aut_wid)
+    widget.hide()
     main_win.update()
     return
 
