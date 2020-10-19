@@ -1,29 +1,37 @@
 import user
-import automat
-import ruleta
-import dice
+from games import *
 import sys
 from PyQt5.QtWidgets import QApplication, QWidget, QLabel, QPushButton, QGridLayout, QSizePolicy, QMainWindow, QMenuBar, \
-    QMenu, QSpinBox, QTableWidget, QTableView
+    QMenu, QSpinBox, QTableWidget
 from PyQt5.QtGui import QFont
 
 main_win = ""
 widget = ""
 users = []
 us = ""
+bet = 1
 
 
 def gui_kostky():
-    print("hello")
     pass
 
 
 def gui_ruleta():
     pass
 
+
+
+
+def automat_set_bet(value):
+    global bet
+    bet = value
+    return
+
 def action_automat():
     global us
-    automat.automat(us,10)
+    global bet
+    numb = Automat(us, bet)
+    print(numb, bet)
     return
 
 def gui_automat():
@@ -48,60 +56,62 @@ def gui_automat():
     #set layout as main layout
     aut_wid.setLayout(layout2)
 
+    #dummy = QSpacerItem(0,0,QSizePolicy.Ignored,QSizePolicy.Ignored)
+    #layout2.addItem(dummy, 1, 1)
+
     #set layout for slots view
-    layout2.addLayout(layout, 2, 1)
+    layout2.addLayout(layout, 2, 2)
     #set layout for control bar
-    layout2.addLayout(layout3,3,2)
+    layout2.addLayout(layout3, 3, 3)
 
     #set table with prices
     table = QTableWidget(10, 2, aut_wid)
     table.setHorizontalHeaderLabels(["Sign", "Win"])
     Wins = []
     Signs = []
-    table.setFixedSize(204,360)
+    table.setFixedSize(204, 360)
     table.verticalHeader().hide()
-    layout2.addWidget(table, 2, 2)
+    layout2.addWidget(table, 2, 3)
 
 
 
 
 
     Slot1 = QWidget(aut_wid)
+    Slot1.setGeometry(0,0,150,150)
     #Slot1.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
-    Slot1.setGeometry(0, 0, 80, 80)
-    Slot1.setStyleSheet(".QWidget { background-color: black} ")
+    Slot1.setStyleSheet('.QWidget { border: 2px solid black; background-color: white } ')
     layout.addWidget(Slot1, 1, 1)
 
     Slot2 = QWidget(aut_wid)
-    Slot2.setGeometry(0,0,80,80)
-    Slot2.setStyleSheet(".QWidget { border: 2px solid black } ")
+    Slot2.setGeometry(0,0,150,150)
+    Slot2.setStyleSheet(".QWidget { border: 2px solid black; background-color: white } ")
     layout.addWidget(Slot2, 1, 2)
 
     Slot3 = QWidget(aut_wid)
-    Slot3.setGeometry(0,0,80,80)
-    Slot3.setStyleSheet(".QWidget { border: 2px solid black } ")
+    Slot3.setGeometry(0,0,150,150)
+    Slot3.setStyleSheet(".QWidget { border: 2px solid black; background-color: white } ")
     layout.addWidget(Slot3, 1, 3)
 
     btn = QPushButton(aut_wid)
     btn.clicked.connect(action_automat)
-    #btn.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
+    btn.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
     btn.setGeometry(0,0,70,40)
     layout3.addWidget(btn, 1, 1)
 
     bet = QSpinBox(aut_wid)
+    bet.setValue(1)
+    bet.setMaximum(1000)
+    bet.valueChanged.connect(automat_set_bet)
     layout3.addWidget(bet, 1, 3)
 
     bet_text = QLabel(aut_wid)
     bet_text.setText("bet:")
-    layout3.addWidget(bet_text, 1,2)
+    layout3.addWidget(bet_text, 1, 2)
 
-
-    #widget.hide()
-    #aut_wid.show()
-    Slot1.setStyleSheet("background-color: red")
     main_win.setCentralWidget(aut_wid)
+    widget.hide()
     main_win.update()
-    print("hello2")
     return
 
 
@@ -135,7 +145,7 @@ def main():
 
     widget = QWidget()
     main_win.setCentralWidget(widget)
-    widget.setGeometry(500, 500, 1000, 1000)
+    widget.setGeometry(0, 0, 1000, 1000)
     main_win.setWindowTitle("Casino Royale")
     widget.setStyleSheet(".QWidget{ border-image: url(./SKINS/main_menu.jpg)}")
 
@@ -191,4 +201,9 @@ def main():
     # us = user.User("novak")
     us = users[0]
     return app.exec_()
-exit(main())
+
+numb = main()
+for i in users:
+    i.save()
+    print(i.get_balance())
+exit(numb)
