@@ -108,18 +108,11 @@ class User:
         except:
             pass
         try:
-            #with open(temp, 'wb') as f:
-            #    pickle.dump(self, f)
-            #file = open(temp,'w')
-            pass
-        except:
-            pass
-            os.rename(temp_bkp, temp)
-        try:
             pickle.dump(self, open(temp,'wb'), pickle.HIGHEST_PROTOCOL)
         except:
+            os.rename(temp_bkp, temp)
             print("Can´t dump pickle to file:",temp)
-            exit(1)
+            return
         try:
             os.remove(temp_bkp)
         except:

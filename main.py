@@ -2,7 +2,8 @@ import user
 from games import *
 import sys
 from PyQt5.QtWidgets import QApplication, QWidget, QLabel, QPushButton, QGridLayout, QSizePolicy, QMainWindow, QMenuBar, \
-     QSpinBox, QTableWidget, QAction
+    QSpinBox, QTableWidget, QAction, QTableWidgetItem
+from PyQt5.QtCore import Qt
 
 from PyQt5.QtGui import QFont
 
@@ -10,7 +11,26 @@ main_win = ""
 users = []
 us = ""
 bet = 1
+slots = []
+Alert = ""
 
+def alert(bet, balance):
+    global Alert
+    new_win = QWidget()
+    Alert = new_win
+    new_win.setFixedSize(300, 120)
+    new_win.setWindowTitle("ERROR MESSAGE")
+    text = QLabel("LOW BALANCE:\nBalance: " + str(balance) + "\nBet: " + str(bet))
+    layout = QGridLayout()
+    layout.addWidget(text, 1, 1)
+    new_win.setLayout(layout)
+    new_win.show()
+    btn = QPushButton(new_win)
+    btn.setText("Okey")
+    btn.clicked.connect(new_win.close)
+    layout.addWidget(btn, 2, 1)
+    new_win.update()
+    return
 
 def gui_kostky():
     pass
@@ -52,7 +72,7 @@ def set_main_menu():
     btn_ruleta.setText("Ruleta")
     btn_ruleta.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
     btn_ruleta.setFixedSize(250, 250)
-    btn_ruleta.setStyleSheet("background-color: green")
+    btn_ruleta.setStyleSheet("QPushButton { background-color: rgba(0, 124, 52, 1); } QPushButton:hover { background-color: rgba(0, 124, 52, 0.6);} ")
     btn_ruleta.clicked.connect(gui_ruleta)
     grid_games.addWidget(btn_ruleta, 1, 1)
 
@@ -61,7 +81,7 @@ def set_main_menu():
     btn_kostky.setText("Kostky")
     btn_kostky.setFixedSize(250, 250)
     btn_kostky.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
-    btn_kostky.setStyleSheet("background-color: yellow")
+    btn_kostky.setStyleSheet("QPushButton { background-color: rgba(255, 194, 0, 1); } QPushButton:hover { background-color: rgba(255, 194, 0, 0.6);} ")
     btn_kostky.clicked.connect(gui_kostky)
     grid_games.addWidget(btn_kostky, 1, 2)
 
@@ -70,7 +90,7 @@ def set_main_menu():
     btn_automat.setText("Automat")
     btn_automat.setFixedSize(250, 250)
     btn_automat.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
-    btn_automat.setStyleSheet("background-color: red")
+    btn_automat.setStyleSheet("QPushButton { background-color: rgba(255, 0, 0, 1); } QPushButton:hover { background-color: rgba(255, 0, 0, 0.6);} ")
     btn_automat.clicked.connect(gui_automat)
     grid_games.addWidget(btn_automat, 1, 3)
 
@@ -87,8 +107,15 @@ def automat_set_bet(value):
 def action_automat():
     global us
     global bet
+    global slots
     numb = Automat(us, bet)
-    print(numb, bet)
+    if type(numb) == bool:
+        print("balance")
+        alert(bet, us.get_balance())
+        return
+    slots[0].setStyleSheet('.QWidget { border: 5px solid black; background-image: url("SKINS/' + str(numb[0]) + '.png") } ')
+    slots[1].setStyleSheet('.QWidget { border: 5px solid black; background-image: url("SKINS/' + str(numb[1]) + '.png") } ')
+    slots[2].setStyleSheet('.QWidget { border: 5px solid black; background-image: url("SKINS/' + str(numb[2]) + '.png") } ')
     return
 
 
@@ -105,7 +132,7 @@ def gui_automat():
 
     # new widget to replace main menu
     aut_wid = QWidget()
-    aut_wid.setStyleSheet("background-color: red ")
+    aut_wid.setStyleSheet(".QWidget { background-color: red } ")
     aut_wid.setGeometry(0, 0, main_win.width(), main_win.height())
 
     # main grid
@@ -126,33 +153,39 @@ def gui_automat():
     # set table with prices
     table = QTableWidget(10, 2, aut_wid)
     table.setHorizontalHeaderLabels(["Sign", "Win"])
-    Wins = []
-    Signs = []
+    Wins = [20,40,80,80,80,150,300,300,800,800]
+    Signs = [1,2,3,4,5,6,7,8,9,0]
+    for pos in range(0,10):
+        Item1 = QTableWidgetItem(str(Signs[pos]))
+        Item1.setTextAlignment(Qt.AlignHCenter)
+        Item2 = QTableWidgetItem(str(Wins[pos]))
+        Item2.setTextAlignment(Qt.AlignHCenter)
+        table.setItem(pos, 0, Item1)
+        table.setItem(pos, 1, Item2)
     table.setFixedSize(204, 360)
     table.verticalHeader().hide()
+    table.setStyleSheet("background-color: yellow; text-align: center")
     layout2.addWidget(table, 2, 3)
 
-
     Slot1 = QWidget(aut_wid)
-    Slot1.setGeometry(0, 0, 150, 150)
-    # Slot1.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
-
-    Slot1.setStyleSheet('.QWidget { border: 2px solid black; background-color: white } ')
+    Slot1.setFixedSize(250, 400)
+    Slot1.setStyleSheet('.QWidget { border: 5px solid black; background-image: url("SKINS/1.png") } ')
     layout.addWidget(Slot1, 1, 1)
 
     Slot2 = QWidget(aut_wid)
-
-    Slot2.setGeometry(0, 0, 150, 150)
-
-    Slot2.setStyleSheet(".QWidget { border: 2px solid black; background-color: white } ")
+    Slot2.setFixedSize(250, 400)
+    Slot2.setStyleSheet('.QWidget { border: 5px solid black; background-image: url("SKINS/2.png") } ')
     layout.addWidget(Slot2, 1, 2)
 
     Slot3 = QWidget(aut_wid)
-
-    Slot3.setGeometry(0, 0, 150, 150)
-
-    Slot3.setStyleSheet(".QWidget { border: 2px solid black; background-color: white } ")
+    Slot3.setFixedSize(250, 400)
+    Slot3.setStyleSheet('.QWidget { border: 5px solid black; background-image: url("SKINS/3.png") } ')
     layout.addWidget(Slot3, 1, 3)
+
+    slots.clear()
+    slots.append(Slot1)
+    slots.append(Slot2)
+    slots.append(Slot3)
 
     btn = QPushButton(aut_wid)
     btn.clicked.connect(action_automat)
@@ -164,6 +197,7 @@ def gui_automat():
 
     bet = QSpinBox(aut_wid)
     bet.setValue(1)
+    bet.setMinimum(1)
     bet.setMaximum(1000)
     bet.valueChanged.connect(automat_set_bet)
     layout3.addWidget(bet, 1, 3)
@@ -173,7 +207,6 @@ def gui_automat():
     layout3.addWidget(bet_text, 1, 2)
 
     main_win.setCentralWidget(aut_wid)
-    widget.hide()
     main_win.update()
     return
 

@@ -7,6 +7,9 @@ def generovani():
     return random.choices(numbers, probability)[0]
 
 def automat(user,bet):
+
+    if user.get_balance() < bet:
+        return False
     z_1 = generovani()
     z_2 = generovani()
     z_3 = generovani()
@@ -22,28 +25,28 @@ def automat(user,bet):
             user.add_balance(40*bet)
         # 0.15^3 = 0.3375%
         elif z_1 == 3:
-            user.add_balance(100*bet)
+            user.add_balance(80*bet)
         # 0.15^3 = 0.3375%
         elif z_1 == 4:
-            user.add_balance(100*bet)
+            user.add_balance(80*bet)
         # 0.05^3 = 0,0125%
         elif z_1 == 5:
-            user.add_balance(200*bet)
+            user.add_balance(80*bet)
         # 0.05^3 = 0,0125%
         elif z_1 == 6:
-            user.add_balance(200*bet)
+            user.add_balance(150*bet)
         # 0.03^3 = 0,0027%
         elif z_1 == 7:
-            user.add_balance(500*bet)
+            user.add_balance(300*bet)
         # 0.03^3 = 0,0027%
         elif z_1 == 8:
-            user.add_balance(500*bet)
+            user.add_balance(300*bet)
         # 0.02^3 = 0,0008%
         elif z_1 == 9:
-            user.add_balance(1000*bet)
+            user.add_balance(800*bet)
         # 0.02^3 = 0,0008%
         elif z_1 == 10:
-            user.add_balance(1000*bet)
+            user.add_balance(800*bet)
     else:
         user.sub_balance(bet)
     return [z_1,z_2,z_3]
