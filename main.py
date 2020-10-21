@@ -17,7 +17,9 @@ slots = []
 Alert = []
 balance = ""
 username = ""
-result_int = 0
+result_int = 4
+cervena = [1,3,5,7,9,12,14,16,18,19,21,23,25,27,30,32,34,36]
+cerna = [2,4,6,8,10,11,13,15,17,20,22,24,26,28,29,31,33,35]
 
 def update_menu(user):
     global balance
@@ -393,7 +395,18 @@ def action_ruleta():
         alert(bet, us.get_balance())
         return
     result_int = (num)
+    print(result_int)
     update_menu(us)
+    return
+
+# change label background based on number
+def label_color():
+    if result_int in cervena :
+        result.setStyleSheet("QLabel{background-color: rgba(204, 0, 0, 1); border-radius: 10px}")
+    elif result_int in cerna:
+        result.setStyleSheet("QLabel{background-color: rgba(64, 64, 64, 1); border-radius: 10px}")
+    else:
+        result.setStyleSheet("QLabel{background-color: rgba(0, 153, 0, 1); border-radius: 10px}")
     return
 
 def gui_ruleta():
@@ -443,6 +456,7 @@ def gui_ruleta():
     btn_bet.clicked.connect(action_ruleta)
     btn_bet.clicked.connect(lambda: balance.setNum(us.get_balance()))
     btn_bet.clicked.connect(lambda: result.setNum(result_int))
+    btn_bet.clicked.connect(label_color)
     layout3.addWidget(btn_bet, 1, 2)
 
     # show balance of user
@@ -486,12 +500,19 @@ def gui_ruleta():
     layout3.addWidget(choice, 0, 1)
 
     # result label
+    global result
     result = QLabel(rul_wid)
     result.setNum(result_int)
     result.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
     result.setFixedSize(50, 50)
     result.setAlignment(Qt.AlignCenter)
-    result.setStyleSheet("background-color: rgba(64, 64, 64, 1); border-radius: 30px")
+    #number on color
+    if result_int in cervena :
+        result.setStyleSheet("QLabel{background-color: rgba(204, 0, 0, 1); border-radius: 10px}")
+    elif result_int in cerna:
+        result.setStyleSheet("QLabel{background-color: rgba(64, 64, 64, 1); border-radius: 10px}")
+    else:
+        result.setStyleSheet("QLabel{background-color: rgba(0, 153, 0, 1); border-radius: 10px}")
     layout4.addWidget(result, 1, 1)
 
     # update window
