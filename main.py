@@ -395,7 +395,7 @@ def action_ruleta():
         alert(bet, us.get_balance())
         return
     result_int = (num)
-    print(result_int)
+    label_color()
     update_menu(us)
     return
 
@@ -456,7 +456,6 @@ def gui_ruleta():
     btn_bet.clicked.connect(action_ruleta)
     btn_bet.clicked.connect(lambda: balance.setNum(us.get_balance()))
     btn_bet.clicked.connect(lambda: result.setNum(result_int))
-    btn_bet.clicked.connect(label_color)
     layout3.addWidget(btn_bet, 1, 2)
 
     # show balance of user
