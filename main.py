@@ -1,3 +1,4 @@
+from random import choice
 import user
 from games import *
 import sys
@@ -11,10 +12,12 @@ main_win = ""
 users = []
 us = ""
 bet = 1
+choice = 0
 slots = []
 Alert = []
 balance = ""
 username = ""
+result_int = 0
 
 def update_menu(user):
     global balance
@@ -197,7 +200,7 @@ def gui_ruleta():
 
 def set_main_menu():
     global main_win
-
+    
     # if widget was not set dont try to delete it
     widget_to_delete = main_win.centralWidget()
     try:
@@ -224,28 +227,25 @@ def set_main_menu():
 
     # RULETA
     btn_ruleta = QPushButton(widget)
-    btn_ruleta.setText("Ruleta")
     btn_ruleta.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
     btn_ruleta.setFixedSize(250, 250)
-    btn_ruleta.setStyleSheet("QPushButton { background-color: rgba(0, 124, 52, 1); } QPushButton:hover { background-color: rgba(0, 124, 52, 0.6);} ")
+    btn_ruleta.setStyleSheet("QPushButton { border-image: url(./SKINS/ruleta_icona.png) } QPushButton:hover { border-image: url(./SKINS/ruleta_icona_hover.png)} ")
     btn_ruleta.clicked.connect(gui_ruleta)
     grid_games.addWidget(btn_ruleta, 1, 1)
 
     # KOSTKY
     btn_kostky = QPushButton(widget)
-    btn_kostky.setText("Kostky")
     btn_kostky.setFixedSize(250, 250)
     btn_kostky.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
-    btn_kostky.setStyleSheet("QPushButton { background-color: rgba(255, 194, 0, 1); } QPushButton:hover { background-color: rgba(255, 194, 0, 0.6);} ")
+    btn_kostky.setStyleSheet("QPushButton { border-image: url(./SKINS/dices_icona.png) } QPushButton:hover { border-image: url(./SKINS/dices_icona_hover.png)} ")
     btn_kostky.clicked.connect(gui_kostky)
     grid_games.addWidget(btn_kostky, 1, 2)
 
     # AUTOMAT
     btn_automat = QPushButton(widget)
-    btn_automat.setText("Automat")
     btn_automat.setFixedSize(250, 250)
     btn_automat.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
-    btn_automat.setStyleSheet("QPushButton { background-color: rgba(255, 0, 0, 1); } QPushButton:hover { background-color: rgba(255, 0, 0, 0.6);} ")
+    btn_automat.setStyleSheet("QPushButton { border-image: url(./SKINS/slots_icona.png) } QPushButton:hover { border-image: url(./SKINS/slots_icona_hover.png)} ")
     btn_automat.clicked.connect(gui_automat)
     grid_games.addWidget(btn_automat, 1, 3)
 
@@ -362,10 +362,141 @@ def gui_automat():
     bet_text.setText("bet:")
     layout3.addWidget(bet_text, 1, 2)
 
+    btn_back = QPushButton(aut_wid)
+    btn_back.setText("Back")
+    btn_back.clicked.connect(set_main_menu)
+
     main_win.setCentralWidget(aut_wid)
     main_win.update()
     return
 
+def ruleta_set_bet(value):
+    global bet
+    bet = value
+    return
+
+def ruleta_set_choice(value):
+    global choice
+    choice = value
+    return
+
+def action_ruleta():
+    global us
+    global bet
+    global choice
+    global result_int
+
+    num = Ruleta(us, bet, choice)
+    #if bet is larger than balance, alert
+    if type(num) == bool:
+        print("balance")
+        alert(bet, us.get_balance())
+        return
+    result_int = (num)
+    update_menu(us)
+    return
+
+def gui_ruleta():
+    global main_win
+    global widget
+    global us
+
+    widget_to_delete = main_win.centralWidget()
+    try:
+        widget_to_delete.destroy()
+    except:
+        pass
+
+    # new widget to replace main menu
+    rul_wid = QWidget()
+    rul_wid.setStyleSheet(".QWidget { background-color: green } ")
+    rul_wid.setGeometry(0, 0, main_win.width(), main_win.height())
+
+    # main layout
+    layout = QGridLayout(rul_wid)
+
+    layout2 = QGridLayout(rul_wid)
+    layout3 = QGridLayout(rul_wid)
+    layout4 = QGridLayout(rul_wid)
+
+
+    # set layout as main layout
+    rul_wid.setLayout(layout)
+
+    layout.addLayout(layout2, 0, 0)
+    layout.addLayout(layout3, 4, 8)
+    layout.addLayout(layout4, 2, 2)
+
+    # button back to main menu
+    btn_back = QPushButton(rul_wid)
+    btn_back.setText("Back")
+    btn_back.clicked.connect(set_main_menu)
+    btn_back.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
+    layout2.addWidget(btn_back, 0, 0)
+
+    # Bet button.
+    # actualize balance label
+    # actualize result label
+    btn_bet = QPushButton(rul_wid)
+    btn_bet.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
+    btn_bet.setText("Bet")
+    btn_bet.clicked.connect(action_ruleta)
+    btn_bet.clicked.connect(lambda: balance.setNum(us.get_balance()))
+    btn_bet.clicked.connect(lambda: result.setNum(result_int))
+    layout3.addWidget(btn_bet, 1, 2)
+
+    # show balance of user
+    balance = QLabel(rul_wid)
+    balance.setNum(us.get_balance())
+    balance.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
+    layout2.addWidget(balance, 0, 2)
+    label1 = QLabel(rul_wid)
+    label1.setText("Balance:")
+    label1.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
+    layout2.addWidget(label1, 0, 1)
+    
+
+    # Bet label
+    bet_label = QLabel(rul_wid)
+    bet_label.setText("Bet: ")
+    bet_label.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
+    layout3.addWidget(bet_label, 1, 0)
+
+    # bet amount
+    bet = QSpinBox(rul_wid)
+    bet.setValue(1)
+    bet.setMinimum(1)
+    bet.setMaximum(100000)
+    bet.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
+    bet.valueChanged.connect(ruleta_set_bet)
+    layout3.addWidget(bet, 1, 1)
+
+    # choice label
+    choice_label = QLabel(rul_wid)
+    choice_label.setText("Choice: ")
+    choice_label.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
+    layout3.addWidget(choice_label, 0, 0)
+
+    # Bet choice
+    choice = QSpinBox(rul_wid)
+    choice.setMinimum(0)
+    choice.setMaximum(36)
+    choice.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
+    choice.valueChanged.connect(ruleta_set_choice)
+    layout3.addWidget(choice, 0, 1)
+
+    # result label
+    result = QLabel(rul_wid)
+    result.setNum(result_int)
+    result.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
+    result.setFixedSize(50, 50)
+    result.setAlignment(Qt.AlignCenter)
+    result.setStyleSheet("background-color: rgba(64, 64, 64, 1); border-radius: 30px")
+    layout4.addWidget(result, 1, 1)
+
+    # update window
+    main_win.setCentralWidget(rul_wid)
+    main_win.update()
 
 def main():
     # GUI
