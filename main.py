@@ -2,7 +2,7 @@ import user
 from games import *
 import sys
 from PyQt5.QtWidgets import QApplication, QWidget, QLabel, QPushButton, QGridLayout, QSizePolicy, QMainWindow, QMenuBar, \
-    QSpinBox, QTableWidget, QAction, QTableWidgetItem
+    QSpinBox, QTableWidget, QAction, QTableWidgetItem, QLineEdit, QComboBox
 from PyQt5.QtCore import Qt
 
 from PyQt5.QtGui import QFont
@@ -12,12 +12,134 @@ users = []
 us = ""
 bet = 1
 slots = []
-Alert = ""
+Alert = []
+balance = ""
+username = ""
+
+def update_menu(user):
+    global balance
+    global username
+    balance.setText(str(user.get_balance()))
+    username.setText(user.get_name())
+
+def help():
+    global Alert
+
+    okno = QWidget()
+    Alert.append(okno)
+
+    layout = QGridLayout()
+    okno.setLayout(layout)
+
+    text = QLabel(okno)
+    text.setText("Help")
+    layout.addWidget(text, 1, 1)
+
+    okno.show()
+    okno.update()
+
+def new_user(text):
+    global users
+    global Alert
+    global us
+
+    for i in users:
+        if i.get_name() == text.text():
+            return
+
+    us = user.User(text.text())
+    users.append(us)
+    update_menu(us)
+    Alert.clear()
+
+def create_user():
+    global users
+    global us
+    global Alert
+
+    okno = QWidget()
+    Alert.clear()
+    Alert.append(okno)
+    okno.setFixedSize(300, 150)
+    okno.setWindowTitle("New user")
+
+    layout = QGridLayout()
+    okno.setLayout(layout)
+
+    text2 = QLabel(okno)
+    text2.setText("Input your username")
+    layout.addWidget(text2, 1, 1)
+
+    text = QLineEdit(okno)
+    layout.addWidget(text, 2, 1)
+
+    btn = QPushButton()
+    btn.setText("Okey")
+    btn.clicked.connect(lambda: new_user(text))
+    layout.addWidget(btn, 3 , 1)
+
+    okno.show()
+    okno.update()
+
+def user_update(dropbox):
+    global Alert
+    global us
+    global users
+
+    for i in users:
+        if i.get_name() == dropbox.itemText(dropbox.currentIndex()) :
+            us = i
+
+    update_menu(us)
+    Alert.clear()
+    return
+
+def change_user():
+    global users
+    global us
+    global Alert
+
+    okno = QWidget()
+    okno.setFixedSize(300, 200)
+    Alert.append(okno)
+
+    okno.setWindowTitle("Change user")
+
+    layout = QGridLayout()
+    okno.setLayout(layout)
+
+    dropbox = QComboBox(okno)
+    dropbox.addItem(us.get_name())
+    for user in users :
+        if us is user:
+            continue
+        dropbox.addItem(user.get_name())
+
+    text = QLabel(okno)
+    text.setText("Choose user:")
+    layout.addWidget(text, 2, 1)
+
+    layout.addWidget(dropbox, 3, 1)
+
+    btn = QPushButton(okno)
+    btn.setText("Okey")
+    btn.clicked.connect(lambda: user_update(dropbox))
+    layout.addWidget(btn, 4, 1)
+
+    btn2 = QPushButton(okno)
+    btn2.setText("Create user")
+    btn2.clicked.connect(create_user)
+    layout.addWidget(btn2, 1, 1)
+
+    okno.show()
+    okno.update()
+
+
 
 def alert(bet, balance):
     global Alert
     new_win = QWidget()
-    Alert = new_win
+    Alert.append(new_win)
     new_win.setFixedSize(300, 120)
     new_win.setWindowTitle("ERROR MESSAGE")
     text = QLabel("LOW BALANCE:\nBalance: " + str(balance) + "\nBet: " + str(bet))
@@ -116,6 +238,7 @@ def action_automat():
     slots[0].setStyleSheet('.QWidget { border: 5px solid black; background-image: url("SKINS/' + str(numb[0]) + '.png") } ')
     slots[1].setStyleSheet('.QWidget { border: 5px solid black; background-image: url("SKINS/' + str(numb[1]) + '.png") } ')
     slots[2].setStyleSheet('.QWidget { border: 5px solid black; background-image: url("SKINS/' + str(numb[2]) + '.png") } ')
+    update_menu(us)
     return
 
 
@@ -218,6 +341,8 @@ def main():
     global widget
     global users
     global us
+    global username
+    global balance
 
     app = QApplication(sys.argv)
     main_win = QMainWindow()
@@ -225,6 +350,7 @@ def main():
     main_win.setGeometry(0, 0, 1000, 1000)
 
     menubar = QMenuBar(main_win)
+    menubar.setFixedHeight(50)
     main_win.setMenuBar(menubar)
 
     menu_layout = QGridLayout(main_win)
@@ -232,7 +358,7 @@ def main():
 
     menubar.setLayout(menu_layout)
     # dummy to show grid
-    dummy_for_grid = QAction("dummy")
+    dummy_for_grid = QAction("")
     menubar.addAction(dummy_for_grid)
 
     btn_menu = QPushButton(main_win)
@@ -242,11 +368,19 @@ def main():
 
     btn_menu2 = QPushButton(main_win)
     btn_menu2.setText("Change user")
+    btn_menu2.clicked.connect(change_user)
     menu_layout.addWidget(btn_menu2, 1, 2)
 
     btn_menu3 = QPushButton(main_win)
     btn_menu3.setText("Help")
+    btn_menu3.clicked.connect(help)
     menu_layout.addWidget(btn_menu3, 1, 3)
+
+    balance = QLabel(main_win)
+    menu_layout.addWidget(balance, 2, 2)
+
+    username = QLabel(main_win)
+    menu_layout.addWidget(username, 2, 1)
 
     set_main_menu()
 
@@ -258,6 +392,9 @@ def main():
     if not users:
         users.append(user.User('Pepa'))
     us = users[0]
+
+    balance.setText(str(us.get_balance()))
+    username.setText(us.get_name())
 
     return app.exec_()
 
