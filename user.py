@@ -37,7 +37,7 @@ class Skin:
 
     # change price to new price
     def change_price(self, price):
-        self.price = price;
+        self.price = price
         return
 
     # get price of skin
