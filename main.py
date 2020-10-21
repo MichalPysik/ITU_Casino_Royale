@@ -38,16 +38,44 @@ def help():
     okno.show()
     okno.update()
 
+def delete_user(dropbox):
+    global us
+    global users
+    global Alert
+
+    users2 = []
+    users3 = users.copy()
+    for i in range(0,len(users)):
+        if users3[i].get_name() != dropbox.itemText(dropbox.currentIndex()):
+            users2.append(users3[i])
+        else:
+            users3[i].delete()
+
+    users = users2
+    if len(users2) == 0:
+        new_user("NEW USER")
+    else:
+        us = users[0]
+        update_menu(us)
+        Alert.clear()
+
+
+
 def new_user(text):
     global users
     global Alert
     global us
 
     for i in users:
-        if i.get_name() == text.text():
-            return
-
-    us = user.User(text.text())
+        try:
+            if i.get_name() == text.text():
+                return
+        except:
+            if i.get_name() == text:
+                return
+    try:
+        us = user.User(text.text())
+    except: us = user.User(text)
     users.append(us)
     update_menu(us)
     Alert.clear()
@@ -76,7 +104,7 @@ def create_user():
     btn = QPushButton()
     btn.setText("Okey")
     btn.clicked.connect(lambda: new_user(text))
-    layout.addWidget(btn, 3 , 1)
+    layout.addWidget(btn, 3, 1)
 
     okno.show()
     okno.update()
@@ -87,7 +115,7 @@ def user_update(dropbox):
     global users
 
     for i in users:
-        if i.get_name() == dropbox.itemText(dropbox.currentIndex()) :
+        if i.get_name() == dropbox.itemText(dropbox.currentIndex()):
             us = i
 
     update_menu(us)
@@ -119,17 +147,22 @@ def change_user():
     text.setText("Choose user:")
     layout.addWidget(text, 2, 1)
 
-    layout.addWidget(dropbox, 3, 1)
+    layout.addWidget(dropbox, 2, 2)
 
     btn = QPushButton(okno)
     btn.setText("Okey")
     btn.clicked.connect(lambda: user_update(dropbox))
-    layout.addWidget(btn, 4, 1)
+    layout.addWidget(btn, 4, 1, 4, 2)
 
     btn2 = QPushButton(okno)
     btn2.setText("Create user")
     btn2.clicked.connect(create_user)
     layout.addWidget(btn2, 1, 1)
+
+    btn3 = QPushButton(okno)
+    btn3.setText("Delete user")
+    btn3.clicked.connect(lambda: delete_user(dropbox))
+    layout.addWidget(btn3, 1, 2)
 
     okno.show()
     okno.update()
@@ -395,7 +428,6 @@ def main():
 
     balance.setText(str(us.get_balance()))
     username.setText(us.get_name())
-
     return app.exec_()
 
 

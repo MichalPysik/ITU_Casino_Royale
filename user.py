@@ -118,3 +118,11 @@ class User:
         except:
             pass
         return
+
+    def delete(self):
+        temp = 'SAVE/' + self.get_name() + '.pkl'
+        try:
+            os.remove(temp)
+        except:
+            pass
+        return
