@@ -477,9 +477,9 @@ def action_automat():
         return
     if numb[0] == numb[1] and numb[0] == numb[2]:
         you_won()
-    slots[0].setStyleSheet('.QWidget { border: 3px solid black; background-image: url("SKINS/' + str(numb[0]) + '.png") } ')
-    slots[1].setStyleSheet('.QWidget { border: 3px solid black; background-image: url("SKINS/' + str(numb[1]) + '.png") } ')
-    slots[2].setStyleSheet('.QWidget { border: 3px solid black; background-image: url("SKINS/' + str(numb[2]) + '.png") } ')
+    slots[0].setStyleSheet('.QWidget { border: 3px double rgba(126,26,27,1); background-image: url("SKINS/' + str(numb[0]) + '.png") } ')
+    slots[1].setStyleSheet('.QWidget { border: 3px double rgba(126,26,27,1); background-image: url("SKINS/' + str(numb[1]) + '.png") } ')
+    slots[2].setStyleSheet('.QWidget { border: 3px double rgba(126,26,27,1); background-image: url("SKINS/' + str(numb[2]) + '.png") } ')
     update_menu(us)
     return
 
@@ -536,7 +536,7 @@ def gui_automat():
     middle_widget.setFixedWidth(900)
 
     layout_for_middle = QGridLayout(middle_widget)
-    middle_widget.setContentsMargins(20,20,20,20)
+    middle_widget.setContentsMargins(35,35,20,20)
     middle_widget.setLayout(layout_for_middle)
     middle_widget.show()
     middle_widget.update()
@@ -564,20 +564,21 @@ def gui_automat():
         Item1 = QTableWidgetItem(str(Signs[pos]))
         Item1.setTextAlignment(Qt.AlignHCenter)
         Item1.setFlags(Qt.ItemIsEnabled)
-        Item2 = QTableWidgetItem(str(Wins[pos]))
+        Item2 = QTableWidgetItem(str(Wins[pos]) + " x BET")
         Item2.setTextAlignment(Qt.AlignHCenter)
         Item2.setFlags(Qt.ItemIsEnabled)
+        table.setShowGrid(False)
         table.setItem(pos, 0, Item1)
         table.setItem(pos, 1, Item2)
     table.setFixedSize(204, 330)
     table.verticalHeader().hide()
     table.setStyleSheet(".QTableWidget { background-color: rgba(0,0,0,0.3) ; border-bottom: 5px solid black }")
-    layout3.addWidget(table, 1, 1, 1, 3)
+    layout3.addWidget(table, 1, 1, Qt.AlignTop)
 
     Slot = QWidget(aut_wid)
     Slot.setFixedSize(820, 440)
     Slot.setLayout(layout)
-    Slot.setStyleSheet('.QWidget { border: 5px solid rgba(30,30,30,1); background-color: rgba(165,125,0,0.7) }')
+    Slot.setStyleSheet('.QWidget { border: 5px double rgba(126,26,27,1); background-color: rgba(165,125,0,0.7) }')
     Slot.show()
     Slot.update()
     # set layout for slots view
@@ -585,17 +586,17 @@ def gui_automat():
 
     Slot1 = QWidget(Slot)
     Slot1.setFixedSize(250, 400)
-    Slot1.setStyleSheet('.QWidget { border: 3px solid black; background-image: url("SKINS/1.png") } ')
+    Slot1.setStyleSheet('.QWidget { border: 3px double rgba(126,26,27,1); background-image: url("SKINS/7.png") } ')
     layout.addWidget(Slot1, 1, 1)
 
     Slot2 = QWidget(Slot)
     Slot2.setFixedSize(250, 400)
-    Slot2.setStyleSheet('.QWidget { border: 3px solid black; background-image: url("SKINS/2.png") } ')
+    Slot2.setStyleSheet('.QWidget { border: 3px double rgba(126,26,27,1); background-image: url("SKINS/7.png") } ')
     layout.addWidget(Slot2, 1, 2)
 
     Slot3 = QWidget(Slot)
     Slot3.setFixedSize(250, 400)
-    Slot3.setStyleSheet('.QWidget { border: 3px solid black; background-image: url("SKINS/3.png") } ')
+    Slot3.setStyleSheet('.QWidget { border: 3px double rgba(126,26,27,1); background-image: url("SKINS/7.png") } ')
     layout.addWidget(Slot3, 1, 3)
 
     slots.clear()
@@ -603,13 +604,12 @@ def gui_automat():
     slots.append(Slot2)
     slots.append(Slot3)
 
-    btn = QPushButton(right_menu)
-    btn.clicked.connect(action_automat)
-    btn.setFixedSize(200, 40)
-    btn.setText("START")
-    btn.setFont(QFont("Times",20,QFont.Bold))
-    btn.setStyleSheet(".QPushButton { background-color: rgba(0,0,0,0.6) } ")
-    layout3.addWidget(btn, 3, 1, 3, 2, Qt.AlignTop)
+    layout4 = QGridLayout(middle_widget)
+
+    bet_text = QLabel(right_menu)
+    bet_text.setText("BET:")
+    bet_text.setFont(QFont("Times", 16, QFont.Bold))
+    layout4.addWidget(bet_text, 2, 1, Qt.AlignRight)
 
     bet = QSpinBox(right_menu)
     bet.setValue(1)
@@ -618,12 +618,16 @@ def gui_automat():
     bet.valueChanged.connect(automat_set_bet)
     bet.setStyleSheet("background-color: rgba(0,0,0,0.25)")
     bet.setFixedWidth(150)
-    layout3.addWidget(bet, 2, 2, Qt.AlignBottom)
+    layout4.addWidget(bet, 2, 2, Qt.AlignLeft)
 
-    bet_text = QLabel(right_menu)
-    bet_text.setText("BET:")
-    bet_text.setFont(QFont("Times", 16, QFont.Bold))
-    layout3.addWidget(bet_text, 2, 1, Qt.AlignBottom)
+    btn = QPushButton(right_menu)
+    btn.clicked.connect(action_automat)
+    btn.setFixedSize(400, 40)
+    btn.setText("PLAY")
+    btn.setFont(QFont("Times",20,QFont.Bold))
+    btn.setStyleSheet(".QPushButton { background-color: rgba(0,0,0,0.6) } ")
+    layout4.addWidget(btn, 3, 1, 3, 2, Qt.AlignTop)
+    layout_for_middle.addLayout(layout4, 2, 1, 2, 2,Qt.AlignCenter)
 
     btn_back = QPushButton(aut_wid)
     btn_back.setText("Back")
@@ -1104,6 +1108,7 @@ def main():
 
     user_menu = QLabel(main_win)
     user_menu.setText("User:")
+    user_menu.setStyleSheet("background-color: yellow")
     user_menu.setFont(QFont("Arial", 12, QFont.Bold))
     menu_sub_layout.addWidget(user_menu, 2, 1, Qt.AlignRight)
 
