@@ -327,7 +327,7 @@ def gui_automat():
     aut_wid.setLayout(layout2)
 
     middle_widget = QWidget(aut_wid)
-    middle_widget.setStyleSheet(".QWidget { background-color: rgba(255,215,0,0.85); border: 5px double black; border-image: none } ")
+    middle_widget.setStyleSheet(".QWidget { background-color: rgba(255,215,0,0.85); border: 10px solid black; border-image: none } ")
     middle_widget.setFixedWidth(900)
 
     layout_for_middle = QGridLayout(middle_widget)
@@ -341,7 +341,7 @@ def gui_automat():
     right_menu = QWidget(aut_wid)
     right_menu.setLayout(layout3)
     right_menu.setFixedWidth(214)
-    right_menu.setStyleSheet(".QWidget { background-color: rgba(255,215,0,0.8); border: 5px solid black; border-image: none  } ")
+    right_menu.setStyleSheet(".QWidget { background-color: rgba(255,215,0,0.8); border: 6px solid black; border-image: none  } ")
     right_menu.show()
     right_menu.update()
 
@@ -364,15 +364,15 @@ def gui_automat():
         Item2.setFlags(Qt.ItemIsEnabled)
         table.setItem(pos, 0, Item1)
         table.setItem(pos, 1, Item2)
-    table.setFixedSize(204, 360)
+    table.setFixedSize(204, 330)
     table.verticalHeader().hide()
     table.setStyleSheet(".QTableWidget { background-color: rgba(0,0,0,0.3) ; border-bottom: 5px solid black }")
     layout3.addWidget(table, 1, 1, 1, 3)
 
     Slot = QWidget(aut_wid)
-    Slot.setFixedSize(810, 440)
+    Slot.setFixedSize(820, 440)
     Slot.setLayout(layout)
-    Slot.setStyleSheet('.QWidget { border: 5px lines rgba(30,30,30,1); background-color: rgba(165,125,0,0.7) }')
+    Slot.setStyleSheet('.QWidget { border: 5px solid rgba(30,30,30,1); background-color: rgba(165,125,0,0.7) }')
     Slot.show()
     Slot.update()
     # set layout for slots view
@@ -380,17 +380,17 @@ def gui_automat():
 
     Slot1 = QWidget(Slot)
     Slot1.setFixedSize(250, 400)
-    Slot1.setStyleSheet('.QWidget { border: 5px double black; background-image: url("SKINS/1.png") } ')
+    Slot1.setStyleSheet('.QWidget { border: 3px solid black; background-image: url("SKINS/1.png") } ')
     layout.addWidget(Slot1, 1, 1)
 
     Slot2 = QWidget(Slot)
     Slot2.setFixedSize(250, 400)
-    Slot2.setStyleSheet('.QWidget { border: 5px double black; background-image: url("SKINS/2.png") } ')
+    Slot2.setStyleSheet('.QWidget { border: 3px solid black; background-image: url("SKINS/2.png") } ')
     layout.addWidget(Slot2, 1, 2)
 
     Slot3 = QWidget(Slot)
     Slot3.setFixedSize(250, 400)
-    Slot3.setStyleSheet('.QWidget { border: 5px double black; background-image: url("SKINS/3.png") } ')
+    Slot3.setStyleSheet('.QWidget { border: 3px solid black; background-image: url("SKINS/3.png") } ')
     layout.addWidget(Slot3, 1, 3)
 
     slots.clear()
