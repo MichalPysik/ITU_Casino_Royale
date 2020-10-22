@@ -3,7 +3,7 @@ import user
 from games import *
 import sys
 from PyQt5.QtWidgets import QApplication, QWidget, QLabel, QPushButton, QGridLayout, QSizePolicy, QMainWindow, QMenuBar, \
-    QSpinBox, QTableWidget, QAction, QTableWidgetItem, QLineEdit, QComboBox, QHeaderView
+    QSpinBox, QTableWidget, QAction, QTableWidgetItem, QLineEdit, QComboBox, QHeaderView, QMessageBox
 from PyQt5.QtCore import Qt
 
 from PyQt5.QtGui import QFont
@@ -20,6 +20,10 @@ username = ""
 result_int = 4
 cervena = [1,3,5,7,9,12,14,16,18,19,21,23,25,27,30,32,34,36]
 cerna = [2,4,6,8,10,11,13,15,17,20,22,24,26,28,29,31,33,35]
+nOfDice = 1
+throwTable = 0
+DiePlayer = 0
+DieEnemy = 0
 
 def update_menu(user):
     global balance
@@ -192,13 +196,214 @@ def alert(bet, balance):
     new_win.update()
     return
 
+def dice_set_bet(value):
+    global bet
+    bet = value
+    return
+
+def change_nod(text):
+    global nOfDice
+    nOfDice = int(text[0])
+    return
+
+def roll_dice():
+    global main_win
+    global us
+    global bet
+    global nOfDice
+    global throwTable
+    global DiePlayer
+    global DieEnemy
+
+    if us.get_balance() < bet:
+        alert(bet, us.get_balance())
+        return
+
+    for j in range (7):
+        Item1 = QTableWidgetItem("")
+        Item2 = QTableWidgetItem("")
+        throwTable.setItem(j, 0, Item1)
+        throwTable.setItem(j, 1, Item2)
+
+    pT = []
+    eT = []
+    gS, pS, eS, pT, eT = Dice(us, bet, nOfDice)
+    #print("hodnoty jsou" + str(gS) + "  " + str(pS) + "  " + str(eS))
+
+    for i in range (nOfDice):
+        Item1 = QTableWidgetItem(str(pT[i]))
+        Item2 = QTableWidgetItem(str(eT[i]))
+        Item1.setTextAlignment(Qt.AlignCenter)
+        Item2.setTextAlignment(Qt.AlignCenter)
+        throwTable.setItem(i, 0, Item1)
+        throwTable.setItem(i, 1, Item2)
+
+    Item1 = QTableWidgetItem(str(pS))
+    Item2 = QTableWidgetItem(str(eS))
+    Item1.setTextAlignment(Qt.AlignCenter)
+    Item2.setTextAlignment(Qt.AlignCenter)
+    throwTable.setItem(6, 0, Item1)
+    throwTable.setItem(6, 1, Item2)
+
+    if pT[nOfDice-1] == 1:
+        DiePlayer.setStyleSheet('.QWidget { margin: 50px; border-image: url("SKINS/DICE/1yellow.png") } ')
+    elif pT[nOfDice-1] == 2:
+        DiePlayer.setStyleSheet('.QWidget { margin: 50px; border-image: url("SKINS/DICE/2yellow.png") } ')
+    elif pT[nOfDice-1] == 3:
+        DiePlayer.setStyleSheet('.QWidget { margin: 50px; border-image: url("SKINS/DICE/3yellow.png") } ')
+    elif pT[nOfDice-1] == 4:
+        DiePlayer.setStyleSheet('.QWidget { margin: 50px; border-image: url("SKINS/DICE/4yellow.png") } ')
+    elif pT[nOfDice-1] == 5:
+        DiePlayer.setStyleSheet('.QWidget { margin: 50px; border-image: url("SKINS/DICE/5yellow.png") } ')
+    else:
+        DiePlayer.setStyleSheet('.QWidget { margin: 50px; border-image: url("SKINS/DICE/6yellow.png") } ')
+
+    if eT[nOfDice-1] == 1:
+        DieEnemy.setStyleSheet('.QWidget { margin: 50px; border-image: url("SKINS/DICE/1red.png") } ')
+    elif eT[nOfDice-1] == 2:
+        DieEnemy.setStyleSheet('.QWidget { margin: 50px; border-image: url("SKINS/DICE/2red.png") } ')
+    elif eT[nOfDice-1] == 3:
+        DieEnemy.setStyleSheet('.QWidget { margin: 50px; border-image: url("SKINS/DICE/3red.png") } ')
+    elif eT[nOfDice-1] == 4:
+        DieEnemy.setStyleSheet('.QWidget { margin: 50px; border-image: url("SKINS/DICE/4red.png") } ')
+    elif eT[nOfDice-1] == 5:
+        DieEnemy.setStyleSheet('.QWidget { margin: 50px; border-image: url("SKINS/DICE/5red.png") } ')
+    else:
+        DieEnemy.setStyleSheet('.QWidget { margin: 50px; border-image: url("SKINS/DICE/6red.png") } ')
+
+    update_menu(us)
+
+    msgBox = QMessageBox(main_win)
+    msgBox.setIcon(QMessageBox.Information)
+    resText = ""
+    if gS == 0:
+        resText = us.get_name() + ", you have won " + str(bet) + " credit(s)"
+    elif gS == 1:
+        resText = us.get_name() + ", you have lost " + str(bet) + " credit(s)"
+    else:
+        resText = "It's a draw"
+    msgBox.setText(resText)
+    msgBox.setWindowTitle("Game Results")
+    msgBox.setStandardButtons(QMessageBox.Ok)
+    msgBox.show()
+
+    return
+
+
 def gui_kostky():
-    pass
+    global main_win
+    global widget
+    global us
+    global nOfDice
+    global throwTable
+    global DiePlayer
+    global DieEnemy
 
+    nOfDice = 1
 
-def gui_ruleta():
-    pass
+    widget_to_delete = main_win.centralWidget()
+    try:
+        widget_to_delete.destroy()
+    except:
+        pass
 
+    # new widget to replace main menu
+    dice_wid = QWidget()
+    dice_wid.setStyleSheet(".QWidget { border-image: url(./SKINS/DICE/DarkWood.jpg) } ")
+    dice_wid.setGeometry(0, 0, main_win.width(), main_win.height())
+
+    # main grid
+    layout1 = QGridLayout(dice_wid)
+    # grid for num of dice and ROLL button
+    layout2 = QGridLayout(dice_wid)
+    # grid for dice and rolled nums
+    layout3 = QGridLayout(dice_wid)
+
+    # set layout as main layout
+    dice_wid.setLayout(layout1)
+
+    # set layout for number of dice and roll button
+    layout1.addLayout(layout2, 1, 1)
+    # set layout for viewing dice and the numbers rolled in each turn
+    layout1.addLayout(layout3, 2, 1)
+
+    DiePlayer = QWidget(dice_wid)
+    DiePlayer.setFixedSize(280, 300)
+    DiePlayer.setStyleSheet('.QWidget { margin: 50px; border-image: url("SKINS/DICE/1yellow.png") } ')
+    layout3.addWidget(DiePlayer, 2, 1)
+
+    DieEnemy = QWidget(dice_wid)
+    DieEnemy.setFixedSize(280, 300)
+    DieEnemy.setStyleSheet('.QWidget { margin: 50px; border-image: url("SKINS/DICE/2red.png") } ')
+    layout3.addWidget(DieEnemy, 2, 2)
+
+    textPlayer = QLabel(dice_wid)
+    textPlayer.setText(us.get_name())
+    textPlayer.setFixedSize(280,50)
+    textPlayer.setAlignment(Qt.AlignCenter)
+    textPlayer.setStyleSheet(".QLabel { color: yellow; font: bold 28px }")
+    layout3.addWidget(textPlayer, 1, 1)
+
+    textEnemy = QLabel(dice_wid)
+    textEnemy.setText("Enemy")
+    textEnemy.setFixedSize(280,50)
+    textEnemy.setAlignment(Qt.AlignCenter)
+    textEnemy.setStyleSheet(".QLabel { color: red; font: bold 28px}")
+    layout3.addWidget(textEnemy, 1, 2)
+
+    rollBtn = QPushButton(dice_wid)
+    rollBtn.setFixedSize(150, 100)
+    rollBtn.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
+    rollBtn.setStyleSheet("QPushButton { border-image: url(./SKINS/DICE/Roll.png) } QPushButton:hover { border-image: url(./SKINS/DICE/Roll_hover.png)} ")
+    rollBtn.clicked.connect(roll_dice)
+    layout2.addWidget(rollBtn, 1, 1)
+
+    selectBox = QComboBox(dice_wid)
+    selectBox.addItem("1 die")
+    for i in range (5):
+        selectBox.addItem(str(i+2)+" dice")
+    selectBox.setFixedSize(90, 30)
+    selectBox.activated[str].connect(change_nod)
+    layout2.addWidget(selectBox, 1, 2)
+
+    spacer1 = QLabel(dice_wid)
+    layout2.addWidget(spacer1, 1, 3)
+    spacer2 = QLabel(dice_wid)
+    layout2.addWidget(spacer2, 1, 4)
+
+    bet_text = QLabel(dice_wid)
+    bet_text.setText("Bet amount:")
+    bet_text.setAlignment(Qt.AlignCenter)
+    bet_text.setStyleSheet(".QLabel { color: white; font: bold 18px}")
+    layout2.addWidget(bet_text, 1, 5)
+
+    bet = QSpinBox(dice_wid)
+    bet.setFixedSize(90, 30)
+    bet.setValue(1)
+    bet.setMinimum(1)
+    bet.setMaximum(1000)
+    bet.valueChanged.connect(dice_set_bet)
+    layout2.addWidget(bet, 1, 6)
+
+    throwTable = QTableWidget(7, 2, dice_wid)
+    throwTable.setHorizontalHeaderLabels([us.get_name(), "Enemy"])
+    throwTable.setVerticalHeaderLabels(["1", "2", "3", "4", "5", "6", "="])
+    #Wins = [20,40,80,80,80,150,300,300,800,800]
+    #Signs = [1,2,3,4,5,6,7,8,9,0]
+    #for pos in range(0,10):
+    #    Item1 = QTableWidgetItem(str(Signs[pos]))
+    #    Item1.setTextAlignment(Qt.AlignHCenter)
+    #    Item2 = QTableWidgetItem(str(Wins[pos]))
+    #    Item2.setTextAlignment(Qt.AlignHCenter)
+    #    table.setItem(pos, 0, Item1)
+    #    table.setItem(pos, 1, Item2)
+    throwTable.setFixedSize(225, 240)
+    throwTable.setStyleSheet("background-color: yellow; text-align: center")
+    layout3.addWidget(throwTable, 2, 3)
+
+    main_win.setCentralWidget(dice_wid)
+    main_win.update()
+    return
 
 def set_main_menu():
     global main_win
