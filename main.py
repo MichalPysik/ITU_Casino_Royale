@@ -3,7 +3,7 @@ import user
 from games import *
 import sys
 from PyQt5.QtWidgets import QApplication, QWidget, QLabel, QPushButton, QGridLayout, QSizePolicy, QMainWindow, QMenuBar, \
-    QSpinBox, QTableWidget, QAction, QTableWidgetItem, QLineEdit, QComboBox
+    QSpinBox, QTableWidget, QAction, QTableWidgetItem, QLineEdit, QComboBox, QHeaderView
 from PyQt5.QtCore import Qt
 
 from PyQt5.QtGui import QFont
@@ -270,12 +270,34 @@ def action_automat():
         print("balance")
         alert(bet, us.get_balance())
         return
-    slots[0].setStyleSheet('.QWidget { border: 5px solid black; background-image: url("SKINS/' + str(numb[0]) + '.png") } ')
-    slots[1].setStyleSheet('.QWidget { border: 5px solid black; background-image: url("SKINS/' + str(numb[1]) + '.png") } ')
-    slots[2].setStyleSheet('.QWidget { border: 5px solid black; background-image: url("SKINS/' + str(numb[2]) + '.png") } ')
+    if numb[0] == numb[1] and numb[0] == numb[2]:
+        you_won()
+    slots[0].setStyleSheet('.QWidget { border: 5px double black; background-image: url("SKINS/' + str(numb[0]) + '.png") } ')
+    slots[1].setStyleSheet('.QWidget { border: 5px double black; background-image: url("SKINS/' + str(numb[1]) + '.png") } ')
+    slots[2].setStyleSheet('.QWidget { border: 5px double black; background-image: url("SKINS/' + str(numb[2]) + '.png") } ')
     update_menu(us)
     return
 
+
+def you_won():
+    global Alert
+
+    Alert.clear()
+    alert = QWidget()
+    Alert.append(alert)
+    alert.setFixedSize(220, 150)
+    layout = QGridLayout()
+    label = QLabel(alert)
+    label.setFont(QFont("Times", 30, QFont.Bold))
+    label.setText("YOU WON")
+    alert.setLayout(layout)
+    layout.addWidget(label, 1, 1)
+    btn = QPushButton(alert)
+    btn.setText("Close")
+    btn.clicked.connect(alert.close)
+    layout.addWidget(btn, 2, 1)
+    alert.show()
+    alert.update()
 
 def gui_automat():
     global main_win
@@ -290,7 +312,8 @@ def gui_automat():
 
     # new widget to replace main menu
     aut_wid = QWidget()
-    aut_wid.setStyleSheet(".QWidget { background-color: red } ")
+    aut_wid.setStyleSheet(".QWidget { border-image: url('SKINS/automat_background.jpg') } ")
+
     aut_wid.setGeometry(0, 0, main_win.width(), main_win.height())
 
     # main grid
@@ -303,41 +326,71 @@ def gui_automat():
     # set layout as main layout
     aut_wid.setLayout(layout2)
 
-    # set layout for slots view
-    layout2.addLayout(layout, 2, 2)
-    # set layout for control bar
-    layout2.addLayout(layout3, 3, 3)
+    middle_widget = QWidget(aut_wid)
+    middle_widget.setStyleSheet(".QWidget { background-color: rgba(20,20,20,0.8); border: 5px solid black; border-image: none } ")
+    middle_widget.setFixedWidth(900)
+
+    layout_for_middle = QGridLayout(middle_widget)
+    middle_widget.setContentsMargins(20,20,20,20)
+    middle_widget.setLayout(layout_for_middle)
+    middle_widget.show()
+    middle_widget.update()
+
+    layout2.addWidget(middle_widget, 2, 2, 3, 2, Qt.AlignHCenter)
+
+    right_menu = QWidget(aut_wid)
+    right_menu.setLayout(layout3)
+    right_menu.setFixedWidth(214)
+    right_menu.setStyleSheet(".QWidget { background-color: rgba(255,215,0,0.8); border: 5px solid black; border-image: none  } ")
+    right_menu.show()
+    right_menu.update()
+
+    layout2.addWidget(right_menu, 1, 1, 3, 1)
 
     # set table with prices
-    table = QTableWidget(10, 2, aut_wid)
+    table = QTableWidget(10, 2, right_menu)
+    header = QHeaderView(Qt.Horizontal)
+    header.setStyleSheet("background-color: rgba(0,0,0,0.1)")
+    table.setHorizontalHeader(header)
     table.setHorizontalHeaderLabels(["Sign", "Win"])
     Wins = [20,40,80,80,80,150,300,300,800,800]
     Signs = [1,2,3,4,5,6,7,8,9,0]
     for pos in range(0,10):
         Item1 = QTableWidgetItem(str(Signs[pos]))
         Item1.setTextAlignment(Qt.AlignHCenter)
+        Item1.setFlags(Qt.ItemIsEnabled)
         Item2 = QTableWidgetItem(str(Wins[pos]))
         Item2.setTextAlignment(Qt.AlignHCenter)
+        Item2.setFlags(Qt.ItemIsEnabled)
         table.setItem(pos, 0, Item1)
         table.setItem(pos, 1, Item2)
     table.setFixedSize(204, 360)
     table.verticalHeader().hide()
-    table.setStyleSheet("background-color: yellow; text-align: center")
-    layout2.addWidget(table, 2, 3)
+    table.setStyleSheet(".QTableWidget { background-color: rgba(0,0,0,0.3) ; border-bottom: 5px solid black }")
+    layout3.addWidget(table, 1, 1, 1, 3)
 
-    Slot1 = QWidget(aut_wid)
+    Slot = QWidget(aut_wid)
+    Slot.setFixedSize(810, 440)
+    Slot.setLayout(layout)
+    Slot.setStyleSheet('.QWidget { border: 5px double rgba(255,215,0,0.5); background-color: rgba(255,215,0,0.3) }')
+    Slot.show()
+    Slot.update()
+    # set layout for slots view
+    layout_for_middle.addWidget(Slot, 1, 1, Qt.AlignTop)
+
+    Slot1 = QWidget(Slot)
     Slot1.setFixedSize(250, 400)
-    Slot1.setStyleSheet('.QWidget { border: 5px solid black; background-image: url("SKINS/1.png") } ')
+    Slot1.setStyleSheet('.QWidget { border: 5px double black; background-image: url("SKINS/1.png") } ')
     layout.addWidget(Slot1, 1, 1)
 
-    Slot2 = QWidget(aut_wid)
+    Slot2 = QWidget(Slot)
     Slot2.setFixedSize(250, 400)
-    Slot2.setStyleSheet('.QWidget { border: 5px solid black; background-image: url("SKINS/2.png") } ')
+    Slot2.setStyleSheet('.QWidget { border: 5px double black; background-image: url("SKINS/2.png") } ')
     layout.addWidget(Slot2, 1, 2)
 
-    Slot3 = QWidget(aut_wid)
+    Slot3 = QWidget(Slot)
     Slot3.setFixedSize(250, 400)
-    Slot3.setStyleSheet('.QWidget { border: 5px solid black; background-image: url("SKINS/3.png") } ')
+    Slot3.setStyleSheet('.QWidget { border: 5px double black; background-image: url("SKINS/3.png") } ')
     layout.addWidget(Slot3, 1, 3)
 
     slots.clear()
@@ -345,24 +398,26 @@ def gui_automat():
     slots.append(Slot2)
     slots.append(Slot3)
 
-    btn = QPushButton(aut_wid)
+    btn = QPushButton(right_menu)
     btn.clicked.connect(action_automat)
-    btn.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
+    btn.setFixedSize(200, 40)
+    btn.setText("START")
+    btn.setFont(QFont("Times",20,QFont.Bold))
+    btn.setStyleSheet(".QPushButton { background-color: rgba(0,0,0,0.6) } ")
+    layout3.addWidget(btn, 3, 1, 3, 2, Qt.AlignTop)
 
-    btn.setGeometry(0, 0, 70, 40)
-
-    layout3.addWidget(btn, 1, 1)
-
-    bet = QSpinBox(aut_wid)
+    bet = QSpinBox(right_menu)
     bet.setValue(1)
     bet.setMinimum(1)
     bet.setMaximum(1000)
     bet.valueChanged.connect(automat_set_bet)
-    layout3.addWidget(bet, 1, 3)
+    bet.setStyleSheet("background-color: rgba(0,0,0,0.25)")
+    bet.setFixedWidth(170)
+    layout3.addWidget(bet, 2, 2, Qt.AlignBottom)
 
-    bet_text = QLabel(aut_wid)
+    bet_text = QLabel(right_menu)
     bet_text.setText("bet:")
-    layout3.addWidget(bet_text, 1, 2)
+    layout3.addWidget(bet_text, 2, 1, Qt.AlignBottom)
 
     btn_back = QPushButton(aut_wid)
     btn_back.setText("Back")
@@ -560,11 +615,25 @@ def main():
     btn_menu3.clicked.connect(help)
     menu_layout.addWidget(btn_menu3, 1, 3)
 
+    menu_sub_layout = QGridLayout(main_win)
+    menu_layout.addLayout(menu_sub_layout, 2, 1)
+
+    user_menu = QLabel(main_win)
+    user_menu.setText("User:")
+    user_menu.setFont(QFont("Arial", 12, QFont.Bold))
+    menu_sub_layout.addWidget(user_menu, 2, 1, Qt.AlignRight)
+
     balance = QLabel(main_win)
-    menu_layout.addWidget(balance, 2, 2)
+    menu_sub_layout.addWidget(balance, 2, 4, Qt.AlignLeft)
+
+    double_dot = QLabel(main_win)
+    double_dot.setText("Balance:")
+    double_dot.setFont(QFont("Arial", 12, QFont.Bold))
+    menu_sub_layout.addWidget(double_dot, 2, 3, Qt.AlignRight)
+
 
     username = QLabel(main_win)
-    menu_layout.addWidget(username, 2, 1)
+    menu_sub_layout.addWidget(username, 2, 2, Qt.AlignLeft)
 
     set_main_menu()
 
