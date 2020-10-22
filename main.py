@@ -536,7 +536,7 @@ def gui_automat():
     middle_widget.setFixedWidth(900)
 
     layout_for_middle = QGridLayout(middle_widget)
-    middle_widget.setContentsMargins(20,30,20,20)
+    middle_widget.setContentsMargins(35,35,20,20)
     middle_widget.setLayout(layout_for_middle)
     middle_widget.show()
     middle_widget.update()
