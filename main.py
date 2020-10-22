@@ -327,7 +327,7 @@ def gui_automat():
     aut_wid.setLayout(layout2)
 
     middle_widget = QWidget(aut_wid)
-    middle_widget.setStyleSheet(".QWidget { background-color: rgba(20,20,20,0.8); border: 5px solid black; border-image: none } ")
+    middle_widget.setStyleSheet(".QWidget { background-color: rgba(255,215,0,0.85); border: 5px double black; border-image: none } ")
     middle_widget.setFixedWidth(900)
 
     layout_for_middle = QGridLayout(middle_widget)
@@ -372,7 +372,7 @@ def gui_automat():
     Slot = QWidget(aut_wid)
     Slot.setFixedSize(810, 440)
     Slot.setLayout(layout)
-    Slot.setStyleSheet('.QWidget { border: 5px double rgba(255,215,0,0.5); background-color: rgba(255,215,0,0.3) }')
+    Slot.setStyleSheet('.QWidget { border: 5px lines rgba(30,30,30,1); background-color: rgba(165,125,0,0.7) }')
     Slot.show()
     Slot.update()
     # set layout for slots view
@@ -412,11 +412,12 @@ def gui_automat():
     bet.setMaximum(1000)
     bet.valueChanged.connect(automat_set_bet)
     bet.setStyleSheet("background-color: rgba(0,0,0,0.25)")
-    bet.setFixedWidth(170)
+    bet.setFixedWidth(150)
     layout3.addWidget(bet, 2, 2, Qt.AlignBottom)
 
     bet_text = QLabel(right_menu)
-    bet_text.setText("bet:")
+    bet_text.setText("BET:")
+    bet_text.setFont(QFont("Times", 16, QFont.Bold))
     layout3.addWidget(bet_text, 2, 1, Qt.AlignBottom)
 
     btn_back = QPushButton(aut_wid)
