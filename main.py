@@ -629,6 +629,10 @@ def gui_automat():
     btn_back.setText("Back")
     btn_back.clicked.connect(set_main_menu)
 
+    btn_back = QPushButton(aut_wid)
+    btn_back.setText("Back")
+    btn_back.clicked.connect(set_main_menu)
+
     main_win.setCentralWidget(aut_wid)
     main_win.update()
     return
@@ -638,15 +642,19 @@ def ruleta_set_bet(value):
     bet = value
     return
 
-def ruleta_set_choice(value):
+def set_choice_red():
     global choice
-    choice = value
+    choice = "red"
+    return
+
+def set_choice_black():
+    global choice
+    choice = "black"
     return
 
 def action_ruleta():
     global us
     global bet
-    global choice
     global result_int
 
     num = Ruleta(us, bet, choice)
@@ -656,6 +664,8 @@ def action_ruleta():
         alert(bet, us.get_balance())
         return
     result_int = (num)
+
+    #set color of result
     label_color()
     update_menu(us)
     return
@@ -670,6 +680,29 @@ def label_color():
         result.setStyleSheet("QLabel{background-color: rgba(0, 153, 0, 1); border-radius: 10px}")
     return
 
+  
+def create_button(concrete_btn, value):
+    concrete_btn.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
+    concrete_btn.setText(str(value))
+    concrete_btn.setFixedSize(40, 25)
+    if value in cervena :
+        concrete_btn.setStyleSheet("background-color: rgb(204, 0, 0)")
+    elif value in cerna:
+        concrete_btn.setStyleSheet("background-color: rgb(64, 64, 64)")
+    elif value == "red":
+        concrete_btn.setStyleSheet("background-color: rgb(204, 0, 0)")
+    elif value == "black":
+        concrete_btn.setStyleSheet("background-color: rgb(64, 64, 64)")
+    else:
+        concrete_btn.setStyleSheet("background-color: rgb(0, 153, 0)")
+    return
+    
+def double_bet():
+    doubled = bet_box.value()
+    doubled = doubled * 2
+    bet_box.setValue(doubled)
+    return
+  
 def gui_ruleta():
     global main_win
     global widget
@@ -692,14 +725,16 @@ def gui_ruleta():
     layout2 = QGridLayout(rul_wid)
     layout3 = QGridLayout(rul_wid)
     layout4 = QGridLayout(rul_wid)
+    layout5 = QGridLayout(rul_wid)
 
 
     # set layout as main layout
     rul_wid.setLayout(layout)
 
     layout.addLayout(layout2, 0, 0)
-    layout.addLayout(layout3, 4, 8)
-    layout.addLayout(layout4, 2, 2)
+    layout.addLayout(layout3, 2, 2)
+    layout.addLayout(layout4, 1, 1)
+    layout.addLayout(layout5, 2, 1)
 
     # button back to main menu
     btn_back = QPushButton(rul_wid)
@@ -737,13 +772,14 @@ def gui_ruleta():
     layout3.addWidget(bet_label, 1, 0)
 
     # bet amount
-    bet = QSpinBox(rul_wid)
-    bet.setValue(1)
-    bet.setMinimum(1)
-    bet.setMaximum(100000)
-    bet.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
-    bet.valueChanged.connect(ruleta_set_bet)
-    layout3.addWidget(bet, 1, 1)
+    global bet_box
+    bet_box = QSpinBox(rul_wid)
+    bet_box.setValue(1)
+    bet_box.setMinimum(1)
+    bet_box.setMaximum(100000)
+    bet_box.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
+    bet_box.valueChanged.connect(ruleta_set_bet)
+    layout3.addWidget(bet_box, 1, 1)
 
     # choice label
     choice_label = QLabel(rul_wid)
@@ -752,13 +788,17 @@ def gui_ruleta():
     layout3.addWidget(choice_label, 0, 0)
 
     # Bet choice
-    choice = QSpinBox(rul_wid)
-    choice.setMinimum(0)
-    choice.setMaximum(36)
+    choice = QLabel(rul_wid)
     choice.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
-    choice.valueChanged.connect(ruleta_set_choice)
     layout3.addWidget(choice, 0, 1)
 
+    #Double bet value
+    btn_double = QPushButton(rul_wid)
+    btn_double.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
+    btn_double.setText("2x")
+    btn_double.clicked.connect(double_bet)
+    layout3.addWidget(btn_double, 2, 1)
+    
     # result label
     global result
     result = QLabel(rul_wid)
@@ -773,7 +813,245 @@ def gui_ruleta():
         result.setStyleSheet("QLabel{background-color: rgba(64, 64, 64, 1); border-radius: 10px}")
     else:
         result.setStyleSheet("QLabel{background-color: rgba(0, 153, 0, 1); border-radius: 10px}")
-    layout4.addWidget(result, 1, 1)
+    layout4.addWidget(result, 0, 1)
+
+
+    global btn_red
+    btn_red = QPushButton(rul_wid)
+    create_button(btn_red, "red")
+    btn_red.clicked.connect(lambda: choice.setText("red"))
+    btn_red.clicked.connect(set_choice_red)
+    layout5.addWidget(btn_red, 5, 6)
+
+    global btn_black
+    btn_red = QPushButton(rul_wid)
+    create_button(btn_red, "black")
+    btn_red.clicked.connect(lambda: choice.setText("black"))
+    btn_red.clicked.connect(set_choice_black)
+    layout5.addWidget(btn_red, 5, 7)
+
+
+    global btn_0
+    btn_0 = QPushButton(rul_wid)
+    create_button(btn_0, 0)
+    btn_0.clicked.connect(lambda: choice.setNum(0))
+    layout5.addWidget(btn_0, 3, 0)
+
+    global btn_1
+    btn_1 = QPushButton(rul_wid)
+    create_button(btn_1, 1)
+    btn_1.clicked.connect(lambda: choice.setNum(1))
+    layout5.addWidget(btn_1, 4, 1)
+
+    global btn_2
+    btn_2 = QPushButton(rul_wid)
+    create_button(btn_2, 2)
+    btn_2.clicked.connect(lambda: choice.setNum(2))
+    layout5.addWidget(btn_2, 3, 1)
+
+    global btn_3
+    btn_3 = QPushButton(rul_wid)
+    create_button(btn_3, 3)
+    btn_3.clicked.connect(lambda: choice.setNum(3))
+    layout5.addWidget(btn_3, 2, 1)
+
+    global btn_4
+    btn_4 = QPushButton(rul_wid)
+    create_button(btn_4, 4)
+    btn_4.clicked.connect(lambda: choice.setNum(4))
+    layout5.addWidget(btn_4, 4, 2)
+
+    global btn_5
+    btn_5 = QPushButton(rul_wid)
+    create_button(btn_5, 5)
+    btn_5.clicked.connect(lambda: choice.setNum(5))
+    layout5.addWidget(btn_5, 3, 2)
+
+    global btn_6
+    btn_6 = QPushButton(rul_wid)
+    create_button(btn_6, 6)
+    btn_6.clicked.connect(lambda: choice.setNum(6))
+    layout5.addWidget(btn_6, 2, 2)
+
+    global btn_7
+    btn_7 = QPushButton(rul_wid)
+    create_button(btn_7, 7)
+    btn_7.clicked.connect(lambda: choice.setNum(7))
+    layout5.addWidget(btn_7, 4, 3)
+
+    global btn_8
+    btn_8 = QPushButton(rul_wid)
+    create_button(btn_8, 8)
+    btn_8.clicked.connect(lambda: choice.setNum(8))
+    layout5.addWidget(btn_8, 3, 3)
+
+    global btn_9
+    btn_9 = QPushButton(rul_wid)
+    create_button(btn_9, 9)
+    btn_9.clicked.connect(lambda: choice.setNum(9))
+    layout5.addWidget(btn_9, 2, 3)
+
+    global btn_10
+    btn_10 = QPushButton(rul_wid)
+    create_button(btn_10, 10)
+    btn_10.clicked.connect(lambda: choice.setNum(10))
+    layout5.addWidget(btn_10, 4, 4)
+
+    global btn_11
+    btn_11 = QPushButton(rul_wid)
+    create_button(btn_11, 11)
+    btn_11.clicked.connect(lambda: choice.setNum(11))
+    layout5.addWidget(btn_11, 3, 4)
+
+    global btn_12
+    btn_12 = QPushButton(rul_wid)
+    create_button(btn_12, 12)
+    btn_12.clicked.connect(lambda: choice.setNum(12))
+    layout5.addWidget(btn_12, 2, 4)
+
+    global btn_13
+    btn_13 = QPushButton(rul_wid)
+    create_button(btn_13, 13)
+    btn_13.clicked.connect(lambda: choice.setNum(13))
+    layout5.addWidget(btn_13, 4, 5)
+
+    global btn_14
+    btn_14 = QPushButton(rul_wid)
+    create_button(btn_14, 14)
+    btn_14.clicked.connect(lambda: choice.setNum(14))
+    layout5.addWidget(btn_14, 3, 5)
+
+    global btn_15
+    btn_15 = QPushButton(rul_wid)
+    create_button(btn_15, 15)
+    btn_15.clicked.connect(lambda: choice.setNum(15))
+    layout5.addWidget(btn_15, 2, 5)
+
+    global btn_16
+    btn_16 = QPushButton(rul_wid)
+    create_button(btn_16, 16)
+    btn_16.clicked.connect(lambda: choice.setNum(16))
+    layout5.addWidget(btn_16, 4, 6)
+
+    global btn_17
+    btn_17 = QPushButton(rul_wid)
+    create_button(btn_17, 17)
+    btn_17.clicked.connect(lambda: choice.setNum(17))
+    layout5.addWidget(btn_17, 3, 6)
+
+    global btn_18
+    btn_18 = QPushButton(rul_wid)
+    create_button(btn_18, 18)
+    btn_18.clicked.connect(lambda: choice.setNum(18))
+    layout5.addWidget(btn_18, 2, 6)
+
+    global btn_19
+    btn_19 = QPushButton(rul_wid)
+    create_button(btn_19, 19)
+    btn_19.clicked.connect(lambda: choice.setNum(19))
+    layout5.addWidget(btn_19, 4, 7)
+
+    global btn_20
+    btn_20 = QPushButton(rul_wid)
+    create_button(btn_20, 20)
+    btn_20.clicked.connect(lambda: choice.setNum(20))
+    layout5.addWidget(btn_20, 3, 7)
+
+    global btn_21
+    btn_21 = QPushButton(rul_wid)
+    create_button(btn_21, 21)
+    btn_21.clicked.connect(lambda: choice.setNum(21))
+    layout5.addWidget(btn_21, 2, 7)
+
+    global btn_22
+    btn_22 = QPushButton(rul_wid)
+    create_button(btn_22, 22)
+    btn_22.clicked.connect(lambda: choice.setNum(22))
+    layout5.addWidget(btn_22, 4, 8)
+
+    global btn_23
+    btn_23 = QPushButton(rul_wid)
+    create_button(btn_23, 23)
+    btn_23.clicked.connect(lambda: choice.setNum(23))
+    layout5.addWidget(btn_23, 3, 8)
+
+    global btn_24
+    btn_24 = QPushButton(rul_wid)
+    create_button(btn_24, 24)
+    btn_24.clicked.connect(lambda: choice.setNum(24))
+    layout5.addWidget(btn_24, 2, 8)
+
+    global btn_25
+    btn_25 = QPushButton(rul_wid)
+    create_button(btn_25, 25)
+    btn_25.clicked.connect(lambda: choice.setNum(25))
+    layout5.addWidget(btn_25, 4, 9)
+
+    global btn_26
+    btn_26 = QPushButton(rul_wid)
+    create_button(btn_26, 26)
+    btn_26.clicked.connect(lambda: choice.setNum(26))
+    layout5.addWidget(btn_26, 3, 9)
+
+    global btn_27
+    btn_27 = QPushButton(rul_wid)
+    create_button(btn_27, 27)
+    btn_27.clicked.connect(lambda: choice.setNum(27))
+    layout5.addWidget(btn_27, 2, 9)
+
+    global btn_28
+    btn_28 = QPushButton(rul_wid)
+    create_button(btn_28, 28)
+    btn_28.clicked.connect(lambda: choice.setNum(28))
+    layout5.addWidget(btn_28, 4, 10)
+
+    global btn_29
+    btn_29 = QPushButton(rul_wid)
+    create_button(btn_29, 29)
+    btn_29.clicked.connect(lambda: choice.setNum(29))
+    layout5.addWidget(btn_29, 3, 10)
+
+    global btn_30
+    btn_30 = QPushButton(rul_wid)
+    create_button(btn_30, 30)
+    btn_30.clicked.connect(lambda: choice.setNum(30))
+    layout5.addWidget(btn_30, 2, 10)
+
+    global btn_31
+    btn_31 = QPushButton(rul_wid)
+    create_button(btn_31, 31)
+    btn_31.clicked.connect(lambda: choice.setNum(31))
+    layout5.addWidget(btn_31, 4, 11)
+
+    global btn_32
+    btn_32 = QPushButton(rul_wid)
+    create_button(btn_32, 32)
+    btn_32.clicked.connect(lambda: choice.setNum(32))
+    layout5.addWidget(btn_32, 3, 11)
+
+    global btn_33
+    btn_33 = QPushButton(rul_wid)
+    create_button(btn_33, 33)
+    btn_33.clicked.connect(lambda: choice.setNum(33))
+    layout5.addWidget(btn_33, 2, 11)
+
+    global btn_34
+    btn_34 = QPushButton(rul_wid)
+    create_button(btn_34, 34)
+    btn_34.clicked.connect(lambda: choice.setNum(34))
+    layout5.addWidget(btn_34, 4, 12)
+
+    global btn_35
+    btn_35 = QPushButton(rul_wid)
+    create_button(btn_35, 35)
+    btn_35.clicked.connect(lambda: choice.setNum(35))
+    layout5.addWidget(btn_35, 3, 12)
+
+    global btn_36
+    btn_36 = QPushButton(rul_wid)
+    create_button(btn_36, 36)
+    btn_36.clicked.connect(lambda: choice.setNum(36))
+    layout5.addWidget(btn_36, 2, 12)
 
     # update window
     main_win.setCentralWidget(rul_wid)
