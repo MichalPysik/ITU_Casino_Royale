@@ -196,6 +196,209 @@ def alert(bet, balance):
     new_win.update()
     return
 
+
+
+def toolTip_string(nOfSkin, price):
+    global us
+    tip = ""
+    uSkins = us.get_skins()
+    if uSkins[nOfSkin] == True:
+        tip = "Skin already owned by " + us.get_name() + "\n\nClick to set as active background"
+    else:
+        tip = "Price = " + str(price) + " credits\n\nClick to buy and set\nas active background"
+    return tip
+
+def set_buy_background(nOfSkin, price):
+    global us
+    uSkins = us.get_skins()
+    if uSkins[nOfSkin] == True:
+        us.set_active_skin(nOfSkin)
+    elif uSkins[nOfSkin] == False and us.get_balance() >= price:
+        us.sub_balance(price)
+        us.add_skin(nOfSkin)
+        us.set_active_skin(nOfSkin)
+    else:
+        print("NONONO")
+    update_menu(us)
+    return
+
+def fc0():
+    set_buy_background(0, 0)
+    return
+
+def fc1():
+    set_buy_background(1, 3000)
+    return
+
+def fc2():
+    set_buy_background(2, 10000)
+    return
+
+def fc3():
+    set_buy_background(3, 300)
+    return
+
+def fc4():
+    set_buy_background(4, 600)
+    return
+
+def fc5():
+    set_buy_background(5, 1000)
+    return
+
+
+def shop():
+    global main_win
+    global widget
+    global us
+
+    widget_to_delete = main_win.centralWidget()
+    try:
+        widget_to_delete.destroy()
+    except:
+        pass
+    # new widget to replace main menu
+    shop_wid = QWidget()
+    shop_wid.setStyleSheet(".QWidget { background-color: black } ")
+    shop_wid.setGeometry(0, 0, main_win.width(), main_win.height())
+
+    # shop grid
+    layoutS = QGridLayout(shop_wid)
+    # set layout as main layout
+    shop_wid.setLayout(layoutS)
+
+    shopText = QLabel(shop_wid)
+    shopText.setText("Shop with main menu background skins")
+    shopText.setFixedSize(300,50)
+    shopText.setAlignment(Qt.AlignCenter)
+    shopText.setStyleSheet(".QLabel { color: white; font: bold 15px }")
+    layoutS.addWidget(shopText, 1, 2)
+
+    skinBtn0 = QPushButton(shop_wid)
+    skinBtn0.setFixedSize(300, 200)
+    skinBtn0.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
+    skinBtn0.setStyleSheet("QPushButton { border-image: url(./SKINS/MENU_SKINS/main_menu_0.jpg) } QPushButton:hover { color: cyan } ")
+    skinBtn0.setToolTip(toolTip_string(0, 0))
+    skinBtn0.clicked.connect(fc0)
+    layoutS.addWidget(skinBtn0, 2, 1)
+
+    skinBtn1 = QPushButton(shop_wid)
+    skinBtn1.setFixedSize(300, 200)
+    skinBtn1.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
+    skinBtn1.setStyleSheet("QPushButton { border-image: url(./SKINS/MENU_SKINS/main_menu_1.jpg) } QPushButton:hover { color: cyan } ")
+    skinBtn1.setToolTip(toolTip_string(1, 3000))
+    skinBtn1.clicked.connect(fc1)
+    layoutS.addWidget(skinBtn1, 2, 2)
+
+    skinBtn2 = QPushButton(shop_wid)
+    skinBtn2.setFixedSize(300, 200)
+    skinBtn2.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
+    skinBtn2.setStyleSheet("QPushButton { border-image: url(./SKINS/MENU_SKINS/main_menu_2.jpg) } QPushButton:hover { color: cyan } ")
+    skinBtn2.setToolTip(toolTip_string(2, 10000))
+    skinBtn2.clicked.connect(fc2)
+    layoutS.addWidget(skinBtn2, 2, 3)
+
+    skinBtn3 = QPushButton(shop_wid)
+    skinBtn3.setFixedSize(300, 200)
+    skinBtn3.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
+    skinBtn3.setStyleSheet("QPushButton { background-color: rgb(50, 25, 50) } QPushButton:hover { color: cyan } ")
+    skinBtn3.setToolTip(toolTip_string(3, 300))
+    skinBtn3.clicked.connect(fc3)
+    layoutS.addWidget(skinBtn3, 3, 1)
+
+    skinBtn4 = QPushButton(shop_wid)
+    skinBtn4.setFixedSize(300, 200)
+    skinBtn4.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
+    skinBtn4.setStyleSheet("QPushButton { background-color: rgb(140, 0, 0) } QPushButton:hover { color: cyan } ")
+    skinBtn4.setToolTip(toolTip_string(4, 600))
+    skinBtn4.clicked.connect(fc4)
+    layoutS.addWidget(skinBtn4, 3, 2)
+
+    skinBtn5 = QPushButton(shop_wid)
+    skinBtn5.setFixedSize(300, 200)
+    skinBtn5.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
+    skinBtn5.setStyleSheet("QPushButton { background-color: rgb(0, 100, 0) } QPushButton:hover { color: cyan } ")
+    skinBtn5.setToolTip(toolTip_string(5, 1000))
+    skinBtn5.clicked.connect(fc5)
+    layoutS.addWidget(skinBtn5, 3, 3)
+
+    main_win.setCentralWidget(shop_wid)
+    main_win.update()
+    return
+
+
+
+
+def set_main_menu():
+    global main_win
+    global us
+
+    # if widget was not set dont try to delete it
+    widget_to_delete = main_win.centralWidget()
+    try:
+        widget_to_delete.destroy()
+    except:
+        pass
+
+    widget = QWidget()
+    widget.setGeometry(0, 0, main_win.width(), main_win.height())
+
+    actSk = us.get_active_skin()
+    if actSk == 0:
+        widget.setStyleSheet(".QWidget{ border-image: url(./SKINS/MENU_SKINS/main_menu_0.jpg)}")
+    elif actSk == 1:
+        widget.setStyleSheet(".QWidget{ border-image: url(./SKINS/MENU_SKINS/main_menu_1.jpg)}")
+    elif actSk == 2:
+        widget.setStyleSheet(".QWidget{ border-image: url(./SKINS/MENU_SKINS/main_menu_2.jpg)}")
+    elif actSk == 3:
+        widget.setStyleSheet(".QWidget{ background-color: rgb(50, 25, 50) }")
+    elif actSk == 4:
+        widget.setStyleSheet(".QWidget{ background-color: rgb(140, 0, 0) }")
+    else:
+        widget.setStyleSheet(".QWidget{ background-color: rgb(0, 100, 0) }")
+
+    layout = QGridLayout(widget)
+    widget.setLayout(layout)
+
+    grid_games = QGridLayout()
+    layout.addLayout(grid_games, 2, 1)
+
+    title = QLabel(widget)
+    title.setFont(QFont('Arial', 50))
+    title.setText("Casino Royale")
+    title.setStyleSheet("border-image: none; color: white")
+    layout.addWidget(title, 1, 1)
+
+    # RULETA
+    btn_ruleta = QPushButton(widget)
+    btn_ruleta.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
+    btn_ruleta.setFixedSize(250, 250)
+    btn_ruleta.setStyleSheet("QPushButton { border-image: url(./SKINS/ruleta_icona.png) } QPushButton:hover { border-image: url(./SKINS/ruleta_icona_hover.png)} ")
+    btn_ruleta.clicked.connect(gui_ruleta)
+    grid_games.addWidget(btn_ruleta, 1, 1)
+
+    # KOSTKY
+    btn_kostky = QPushButton(widget)
+    btn_kostky.setFixedSize(250, 250)
+    btn_kostky.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
+    btn_kostky.setStyleSheet("QPushButton { border-image: url(./SKINS/dices_icona.png) } QPushButton:hover { border-image: url(./SKINS/dices_icona_hover.png)} ")
+    btn_kostky.clicked.connect(gui_kostky)
+    grid_games.addWidget(btn_kostky, 1, 2)
+
+    # AUTOMAT
+    btn_automat = QPushButton(widget)
+    btn_automat.setFixedSize(250, 250)
+    btn_automat.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
+    btn_automat.setStyleSheet("QPushButton { border-image: url(./SKINS/slots_icona.png) } QPushButton:hover { border-image: url(./SKINS/slots_icona_hover.png)} ")
+    btn_automat.clicked.connect(gui_automat)
+    grid_games.addWidget(btn_automat, 1, 3)
+
+    main_win.setCentralWidget(widget)
+    main_win.update()
+
+
+
+
 def dice_set_bet(value):
     global bet
     bet = value
@@ -388,15 +591,6 @@ def gui_kostky():
     throwTable = QTableWidget(7, 2, dice_wid)
     throwTable.setHorizontalHeaderLabels([us.get_name(), "Enemy"])
     throwTable.setVerticalHeaderLabels(["1", "2", "3", "4", "5", "6", "="])
-    #Wins = [20,40,80,80,80,150,300,300,800,800]
-    #Signs = [1,2,3,4,5,6,7,8,9,0]
-    #for pos in range(0,10):
-    #    Item1 = QTableWidgetItem(str(Signs[pos]))
-    #    Item1.setTextAlignment(Qt.AlignHCenter)
-    #    Item2 = QTableWidgetItem(str(Wins[pos]))
-    #    Item2.setTextAlignment(Qt.AlignHCenter)
-    #    table.setItem(pos, 0, Item1)
-    #    table.setItem(pos, 1, Item2)
     throwTable.setFixedSize(225, 240)
     throwTable.setStyleSheet("background-color: yellow; text-align: center")
     layout3.addWidget(throwTable, 2, 3)
@@ -405,59 +599,8 @@ def gui_kostky():
     main_win.update()
     return
 
-def set_main_menu():
-    global main_win
-    
-    # if widget was not set dont try to delete it
-    widget_to_delete = main_win.centralWidget()
-    try:
-        widget_to_delete.destroy()
-    except:
-        pass
 
-    widget = QWidget()
-    widget.setGeometry(0, 0, main_win.width(), main_win.height())
 
-    widget.setStyleSheet(".QWidget{ border-image: url(./SKINS/main_menu.jpg)}")
-
-    layout = QGridLayout(widget)
-    widget.setLayout(layout)
-
-    grid_games = QGridLayout()
-    layout.addLayout(grid_games, 2, 1)
-
-    title = QLabel(widget)
-    title.setFont(QFont('Arial', 50))
-    title.setText("Casino Royale")
-    title.setStyleSheet("border-image: none; color: white")
-    layout.addWidget(title, 1, 1)
-
-    # RULETA
-    btn_ruleta = QPushButton(widget)
-    btn_ruleta.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
-    btn_ruleta.setFixedSize(250, 250)
-    btn_ruleta.setStyleSheet("QPushButton { border-image: url(./SKINS/ruleta_icona.png) } QPushButton:hover { border-image: url(./SKINS/ruleta_icona_hover.png)} ")
-    btn_ruleta.clicked.connect(gui_ruleta)
-    grid_games.addWidget(btn_ruleta, 1, 1)
-
-    # KOSTKY
-    btn_kostky = QPushButton(widget)
-    btn_kostky.setFixedSize(250, 250)
-    btn_kostky.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
-    btn_kostky.setStyleSheet("QPushButton { border-image: url(./SKINS/dices_icona.png) } QPushButton:hover { border-image: url(./SKINS/dices_icona_hover.png)} ")
-    btn_kostky.clicked.connect(gui_kostky)
-    grid_games.addWidget(btn_kostky, 1, 2)
-
-    # AUTOMAT
-    btn_automat = QPushButton(widget)
-    btn_automat.setFixedSize(250, 250)
-    btn_automat.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
-    btn_automat.setStyleSheet("QPushButton { border-image: url(./SKINS/slots_icona.png) } QPushButton:hover { border-image: url(./SKINS/slots_icona_hover.png)} ")
-    btn_automat.clicked.connect(gui_automat)
-    grid_games.addWidget(btn_automat, 1, 3)
-
-    main_win.setCentralWidget(widget)
-    main_win.update()
 
 
 def automat_set_bet(value):
@@ -641,6 +784,9 @@ def gui_automat():
     main_win.update()
     return
 
+
+
+
 def ruleta_set_bet(value):
     global bet
     bet = value
@@ -684,7 +830,7 @@ def label_color():
         result.setStyleSheet("QLabel{background-color: rgba(0, 153, 0, 1); border-radius: 10px}")
     return
 
-  
+
 def create_button(concrete_btn, value):
     concrete_btn.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
     concrete_btn.setText(str(value))
@@ -700,13 +846,13 @@ def create_button(concrete_btn, value):
     else:
         concrete_btn.setStyleSheet("background-color: rgb(0, 153, 0)")
     return
-    
+
 def double_bet():
     doubled = bet_box.value()
     doubled = doubled * 2
     bet_box.setValue(doubled)
     return
-  
+
 def gui_ruleta():
     global main_win
     global widget
@@ -767,7 +913,7 @@ def gui_ruleta():
     label1.setText("Balance:")
     label1.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
     layout2.addWidget(label1, 0, 1)
-    
+
 
     # Bet label
     bet_label = QLabel(rul_wid)
@@ -802,7 +948,7 @@ def gui_ruleta():
     btn_double.setText("2x")
     btn_double.clicked.connect(double_bet)
     layout3.addWidget(btn_double, 2, 1)
-    
+
     # result label
     global result
     result = QLabel(rul_wid)
@@ -1071,6 +1217,13 @@ def main():
     global username
     global balance
 
+    # load saved users
+    users = user.get_users()
+    # list is empty
+    if not users:
+        users.append(user.User('Pepa'))
+    us = users[0]
+
     app = QApplication(sys.argv)
     main_win = QMainWindow()
     main_win.setWindowTitle("Casino Royale")
@@ -1103,6 +1256,11 @@ def main():
     btn_menu3.clicked.connect(help)
     menu_layout.addWidget(btn_menu3, 1, 3)
 
+    btn_shop = QPushButton(main_win)
+    btn_shop.setText("Shop")
+    btn_shop.clicked.connect(shop)
+    menu_layout.addWidget(btn_shop, 1, 4)
+
     menu_sub_layout = QGridLayout(main_win)
     menu_layout.addLayout(menu_sub_layout, 2, 1)
 
@@ -1128,12 +1286,6 @@ def main():
 
     main_win.show()
 
-    # load saved users
-    users = user.get_users()
-    # list is empty
-    if not users:
-        users.append(user.User('Pepa'))
-    us = users[0]
 
     balance.setText(str(us.get_balance()))
     username.setText(us.get_name())

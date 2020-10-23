@@ -20,50 +20,14 @@ def get_users():
     return users
 
 
-class Skin:
-    def __init__(self, Id, Type, path, price, name):
-        self.id = Id
-        self.type = Type
-        self.path = path
-        self.price = price
-        self.name = name
-        self.active = False
-        return
-
-
-    # return path to file with skin
-    def get_path(self):
-        return self.path
-
-    # change price to new price
-    def change_price(self, price):
-        self.price = price
-        return
-
-    # get price of skin
-    def get_price(self):
-        return self.price
-
-    # set state of skin
-    def set_active(self, state):
-        self.active = state
-
-    # return True if skin is active
-    def is_active(self):
-        return self.active
-
-    # return name of skin
-    def get_name(self):
-        return self.name
-
-
 # define user which has all needed data saved internally
 class User:
     def __init__(self, name):
         self.name = name
         self.balance = 100
         self.created = time.time()
-        self.skins = []
+        self.skins = [True, False, False, False, False, False]
+        self.activeSkin = 0
         return
 
     # add balance to user
@@ -82,6 +46,8 @@ class User:
     # ret actual balance
     def sub_balance(self, sub):
         self.balance -= sub
+        if self.balance < 0:
+            self.balance = 0
         self.save()
         return self.balance
 
@@ -91,14 +57,26 @@ class User:
         return self.name
 
     # add new skin to user
-    def add_skin(self, skin):
-        self.skins.append(skin)
+    def add_skin(self, skinNum):
+        self.skins[skinNum] = True
         self.save()
         return
 
     # return users skins
     def get_skins(self):
         return self.skins
+
+    # set active skin
+    def set_active_skin(self, skinNum):
+        if skinNum < 0 or skinNum > 5:
+            return
+        self.activeSkin = skinNum
+        self.save()
+        return
+
+    # get number from 0 to 5 representing user's current active skin
+    def get_active_skin(self):
+        return self.activeSkin
 
     def save(self):
         temp = 'SAVE/' + self.get_name() + '.pkl'
