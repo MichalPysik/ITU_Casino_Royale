@@ -197,7 +197,7 @@ def alert(bet, balance):
     return
 
 
-
+# function for shop hover text toolTip
 def toolTip_string(nOfSkin, price):
     global us
     tip = ""
@@ -208,20 +208,36 @@ def toolTip_string(nOfSkin, price):
         tip = "Price = " + str(price) + " credits\n\nClick to buy and set\nas active background"
     return tip
 
+# function for setting and buying backgrounds
 def set_buy_background(nOfSkin, price):
     global us
+    global main_win
+
+    msgBox = QMessageBox(main_win)
+    msgBox.setIcon(QMessageBox.Information)
+    messText = ""
+
     uSkins = us.get_skins()
     if uSkins[nOfSkin] == True:
         us.set_active_skin(nOfSkin)
+        messText = "Skin successfully set as main menu background"
     elif uSkins[nOfSkin] == False and us.get_balance() >= price:
         us.sub_balance(price)
         us.add_skin(nOfSkin)
         us.set_active_skin(nOfSkin)
+        messText = "Thank you for your buy, " + us.get_name() + "!\n\nNew skin successfully set as main menu background"
     else:
-        print("NONONO")
+        messText = "Sorry " + us.get_name() + ", you don't have enought credits!\n\nYou need " + str(price - us.get_balance()) + " more credits to buy this skin"
     update_menu(us)
+
+    msgBox.setText(messText)
+    msgBox.setWindowTitle("Message from skin shop")
+    msgBox.setStandardButtons(QMessageBox.Ok)
+    msgBox.show()
+
     return
 
+# functions calling previous function with various arguments, needed for button compatibility
 def fc0():
     set_buy_background(0, 0)
     return
@@ -246,7 +262,7 @@ def fc5():
     set_buy_background(5, 1000)
     return
 
-
+# shop window
 def shop():
     global main_win
     global widget
@@ -269,15 +285,15 @@ def shop():
 
     shopText = QLabel(shop_wid)
     shopText.setText("Shop with main menu background skins")
-    shopText.setFixedSize(300,50)
+    shopText.setFixedSize(300,60)
     shopText.setAlignment(Qt.AlignCenter)
-    shopText.setStyleSheet(".QLabel { color: white; font: bold 15px }")
+    shopText.setStyleSheet(".QLabel { color: white; font: bold 16px }")
     layoutS.addWidget(shopText, 1, 2)
 
     skinBtn0 = QPushButton(shop_wid)
     skinBtn0.setFixedSize(300, 200)
     skinBtn0.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
-    skinBtn0.setStyleSheet("QPushButton { border-image: url(./SKINS/MENU_SKINS/main_menu_0.jpg) } QPushButton:hover { color: cyan } ")
+    skinBtn0.setStyleSheet("QPushButton { border-image: url(./SKINS/MENU_SKINS/main_menu_0.jpg) } QPushButton:hover { border-image: url(./SKINS/MENU_SKINS/hover_0.jpg) } ")
     skinBtn0.setToolTip(toolTip_string(0, 0))
     skinBtn0.clicked.connect(fc0)
     layoutS.addWidget(skinBtn0, 2, 1)
@@ -285,7 +301,7 @@ def shop():
     skinBtn1 = QPushButton(shop_wid)
     skinBtn1.setFixedSize(300, 200)
     skinBtn1.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
-    skinBtn1.setStyleSheet("QPushButton { border-image: url(./SKINS/MENU_SKINS/main_menu_1.jpg) } QPushButton:hover { color: cyan } ")
+    skinBtn1.setStyleSheet("QPushButton { border-image: url(./SKINS/MENU_SKINS/main_menu_1.jpg) } QPushButton:hover { border-image: url(./SKINS/MENU_SKINS/hover_1.jpg) } ")
     skinBtn1.setToolTip(toolTip_string(1, 3000))
     skinBtn1.clicked.connect(fc1)
     layoutS.addWidget(skinBtn1, 2, 2)
@@ -293,7 +309,7 @@ def shop():
     skinBtn2 = QPushButton(shop_wid)
     skinBtn2.setFixedSize(300, 200)
     skinBtn2.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
-    skinBtn2.setStyleSheet("QPushButton { border-image: url(./SKINS/MENU_SKINS/main_menu_2.jpg) } QPushButton:hover { color: cyan } ")
+    skinBtn2.setStyleSheet("QPushButton { border-image: url(./SKINS/MENU_SKINS/main_menu_2.jpg) } QPushButton:hover { border-image: url(./SKINS/MENU_SKINS/hover_2.jpg) } ")
     skinBtn2.setToolTip(toolTip_string(2, 10000))
     skinBtn2.clicked.connect(fc2)
     layoutS.addWidget(skinBtn2, 2, 3)
@@ -301,7 +317,7 @@ def shop():
     skinBtn3 = QPushButton(shop_wid)
     skinBtn3.setFixedSize(300, 200)
     skinBtn3.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
-    skinBtn3.setStyleSheet("QPushButton { background-color: rgb(50, 25, 50) } QPushButton:hover { color: cyan } ")
+    skinBtn3.setStyleSheet("QPushButton { background-color: rgb(50, 25, 50) } QPushButton:hover { background-color: rgb(36, 18, 36) } ")
     skinBtn3.setToolTip(toolTip_string(3, 300))
     skinBtn3.clicked.connect(fc3)
     layoutS.addWidget(skinBtn3, 3, 1)
@@ -309,7 +325,7 @@ def shop():
     skinBtn4 = QPushButton(shop_wid)
     skinBtn4.setFixedSize(300, 200)
     skinBtn4.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
-    skinBtn4.setStyleSheet("QPushButton { background-color: rgb(140, 0, 0) } QPushButton:hover { color: cyan } ")
+    skinBtn4.setStyleSheet("QPushButton { background-color: rgb(140, 0, 0) } QPushButton:hover { background-color: rgb(105, 0, 0) } ")
     skinBtn4.setToolTip(toolTip_string(4, 600))
     skinBtn4.clicked.connect(fc4)
     layoutS.addWidget(skinBtn4, 3, 2)
@@ -317,7 +333,7 @@ def shop():
     skinBtn5 = QPushButton(shop_wid)
     skinBtn5.setFixedSize(300, 200)
     skinBtn5.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
-    skinBtn5.setStyleSheet("QPushButton { background-color: rgb(0, 100, 0) } QPushButton:hover { color: cyan } ")
+    skinBtn5.setStyleSheet("QPushButton { background-color: rgb(0, 100, 0) } QPushButton:hover { background-color: rgb(0, 70, 0) } ")
     skinBtn5.setToolTip(toolTip_string(5, 1000))
     skinBtn5.clicked.connect(fc5)
     layoutS.addWidget(skinBtn5, 3, 3)
@@ -398,17 +414,19 @@ def set_main_menu():
 
 
 
-
+# function for dice
 def dice_set_bet(value):
     global bet
     bet = value
     return
 
+# function for setting active number of dice (from 1 to 6)
 def change_nod(text):
     global nOfDice
     nOfDice = int(text[0])
     return
 
+# action function for dice
 def roll_dice():
     global main_win
     global us
