@@ -532,7 +532,7 @@ def gui_automat():
     aut_wid.setLayout(layout2)
 
     middle_widget = QWidget(aut_wid)
-    middle_widget.setStyleSheet(".QWidget { background-color: rgba(255,215,0,0.85); border: 10px solid black; border-image: none } ")
+    middle_widget.setStyleSheet(".QWidget { background-color: rgba(255,215,0,0.85); border: 10px solid black; border-image: none; } ")
     middle_widget.setFixedWidth(900)
 
     layout_for_middle = QGridLayout(middle_widget)
@@ -830,7 +830,6 @@ def main():
 
     user_menu = QLabel(main_win)
     user_menu.setText("User:")
-    user_menu.setStyleSheet("background-color: yellow")
     user_menu.setFont(QFont("Arial", 12, QFont.Bold))
     menu_sub_layout.addWidget(user_menu, 2, 1, Qt.AlignRight)
 
