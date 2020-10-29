@@ -669,6 +669,7 @@ def gui_automat():
     global main_win
     global widget
     global us
+    global bet
 
     widget_to_delete = main_win.centralWidget()
     try:
@@ -772,14 +773,14 @@ def gui_automat():
     bet_text.setFont(QFont("Times", 16, QFont.Bold))
     layout4.addWidget(bet_text, 2, 1, Qt.AlignRight)
 
-    bet = QSpinBox(right_menu)
-    bet.setValue(1)
-    bet.setMinimum(1)
-    bet.setMaximum(1000)
-    bet.valueChanged.connect(automat_set_bet)
-    bet.setStyleSheet("background-color: rgba(0,0,0,0.25)")
-    bet.setFixedWidth(150)
-    layout4.addWidget(bet, 2, 2, Qt.AlignLeft)
+    bet_btn = QSpinBox(right_menu)
+    bet_btn.setValue(bet)
+    bet_btn.setMinimum(1)
+    bet_btn.setMaximum(1000)
+    bet_btn.valueChanged.connect(automat_set_bet)
+    bet_btn.setStyleSheet("background-color: rgba(0,0,0,0.25)")
+    bet_btn.setFixedWidth(150)
+    layout4.addWidget(bet_btn, 2, 2, Qt.AlignLeft)
 
     btn = QPushButton(right_menu)
     btn.clicked.connect(action_automat)
@@ -1405,7 +1406,6 @@ def main():
 
     user_menu = QLabel(main_win)
     user_menu.setText("User:")
-    user_menu.setStyleSheet("background-color: yellow")
     user_menu.setFont(QFont("Arial", 12, QFont.Bold))
     menu_sub_layout.addWidget(user_menu, 2, 1, Qt.AlignRight)
 
