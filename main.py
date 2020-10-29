@@ -12,6 +12,7 @@ main_win = ""
 users = []
 us = ""
 bet = 1
+bet_rul = 1
 slots = []
 Alert = []
 balance = ""
@@ -804,8 +805,8 @@ def gui_automat():
 
 
 def ruleta_set_bet(value):
-    global bet
-    bet = value
+    global bet_rul
+    bet_rul = value
     return
 
 def set_choice_num(chosen_num):
@@ -820,18 +821,18 @@ def set_choice_text(chosen_text):
 
 def action_ruleta():
     global us
-    global bet
+    global bet_rul
     global result_int
 
     try:
-        num = Ruleta(us, bet, chosen)
+        num = Ruleta(us, bet_rul, chosen)
     except:
         not_chosen = QWidget()
         Alert.append(not_chosen)
         not_chosen.setFixedSize(220, 150)
         layout = QGridLayout()
         label = QLabel(not_chosen)
-        label.setText("CHOOSE YOUR BET FIRST")
+        label.setText("MAKE YOUR CHOICE FIRST")
         not_chosen.setLayout(layout)
         layout.addWidget(label, 1, 1)
         btn = QPushButton(not_chosen)
@@ -846,26 +847,26 @@ def action_ruleta():
     #if bet is larger than balance, alert
     if type(num) == bool:
         print("balance")
-        alert(bet, us.get_balance())
+        alert(bet_rul, us.get_balance())
         return
     result_int = (num)
 
     if isinstance(chosen, str) == True:
         if (result_int in cervena) and chosen == "red":
-            win_label.setText(us.get_name() + " you have just WON " + str(bet) + " coins")
+            win_label.setText(us.get_name() + " you have just WON " + str(bet_rul) + " coins")
         elif (result_int in cerna) and chosen == "black":
-            win_label.setText(us.get_name() + " you have just WON " + str(bet) + " coins")
+            win_label.setText(us.get_name() + " you have just WON " + str(bet_rul) + " coins")
         elif (result_int % 2 == 0 and result_int != 0) and chosen == "even":
-            win_label.setText(us.get_name() + " you have just WON " + str(bet) + " coins")
+            win_label.setText(us.get_name() + " you have just WON " + str(bet_rul) + " coins")
         elif (result_int % 2 == 1) and chosen == "odd":
-            win_label.setText(us.get_name() + " you have just WON " + str(bet) + " coins")
+            win_label.setText(us.get_name() + " you have just WON " + str(bet_rul) + " coins")
         else:
-            win_label.setText(us.get_name() + " you have just LOST " + str(bet) + " coins")
+            win_label.setText(us.get_name() + " you have just LOST " + str(bet_rul) + " coins")
     else:
         if result_int == chosen:
-            win_label.setText(us.get_name() + " you have just WON " + str(bet) + " coins")
+            win_label.setText(us.get_name() + " you have just WON " + str(bet_rul) + " coins")
         else:
-            win_label.setText(us.get_name() + " you have just LOST " + str(bet) + " coins")
+            win_label.setText(us.get_name() + " you have just LOST " + str(bet_rul) + " coins")
     #set color of result
     label_color()
     update_menu(us)
