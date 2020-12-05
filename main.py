@@ -520,6 +520,7 @@ def gui_kostky():
     global DiePlayer
     global DieEnemy
 
+    dice_set_bet(1)
     nOfDice = 1
 
     widget_to_delete = main_win.centralWidget()
@@ -1055,7 +1056,7 @@ def gui_ruleta():
     btn_back.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
     layout2.addWidget(btn_back, 0, 0)
 
-    # Buttons 4 choosing betting options 
+    # Buttons 4 choosing betting options
     global btn_red
     btn_red = QPushButton(rul_wid)
     create_button(btn_red, "Red")
