@@ -24,6 +24,7 @@ nOfDice = 1
 throwTable = 0
 DiePlayer = 0
 DieEnemy = 0
+windowNum = 0 #0 = main menu, 1 = shop, 2 = roulette, 3 = dice, 4 = slot
 
 def update_menu(user):
     global balance
@@ -33,15 +34,33 @@ def update_menu(user):
 
 def help():
     global Alert
+    global windowNum
 
     okno = QWidget()
     Alert.append(okno)
 
     layout = QGridLayout()
     okno.setLayout(layout)
+    okno.setWindowTitle("Help")
 
     text = QLabel(okno)
-    text.setText("Help")
+
+    if windowNum == 0:
+        okno.setWindowTitle("Main menu help")
+        text.setText("- Click on 1 of the 3 icons on the bottom to play selected game\n\n- Click on change user to create new user or choose between already existing ones\n\n- Click on Shop to spend earned credits on new main menu background skins")
+    elif windowNum == 1:
+        okno.setWindowTitle("Shop help")
+        text.setText("- Here you can spend your earned credits on new main menu backgrounds, or set already owned ones\n\n- Hover your cursor over any skin to view more information about it")
+    elif windowNum == 2:
+        okno.setWindowTitle("Roulette help")
+        text.setText("- Click on a specific number, or a bet choice in the betting area to place a bet\n\n- Enter the bet amount and press the Bet button to start the game\n*Tip: you can quickly double your bet by clicking on \"2x\"\n\n- By betting on odd, even, red, or black, you can win the amount you bet with 48.6% chance\n- By betting on a single number, you can win 35x your bet with a 2.7% chance")
+    elif windowNum == 3:
+        okno.setWindowTitle("Dice help")
+        text.setText("- You play against a computer controlled enemy, all throws are randomly generated\n\n- Whoever throws the bigger sum of numbers wins\n\n- You can choose the amount of dice both players throw with\n\n- All the thrown values, and the sums are shown in the table on the right\n\n- You enter the bet amount into the BET input field\n\n- Press the THROW button to start the game\n\n- If you win, the bet amount gets added to your credit balance\n- If you lose, it gets substracted\n- If the game ends in a draw, you balance stays unchanged")
+    elif windowNum == 4:
+        okno.setWindowTitle("Slot machine help")
+        text.setText("- Enter the bet amount into the BET field\n\n- Press the PLAY button to use the slot machine\n\n- You only win if all 3 shown randomly generated numbers match\n\n- The smaller the number, the higher the chance it appears (except for 0)\n\n- The amounts you can win for getting different sets of same numbers are listed in the table on the left")
+
     layout.addWidget(text, 1, 1)
 
     okno.show()
@@ -267,6 +286,7 @@ def shop():
     global main_win
     global widget
     global us
+    global windowNum
 
     widget_to_delete = main_win.centralWidget()
     try:
@@ -282,6 +302,8 @@ def shop():
     layoutS = QGridLayout(shop_wid)
     # set layout as main layout
     shop_wid.setLayout(layoutS)
+
+    windowNum = 1 #for help
 
     shopText = QLabel(shop_wid)
     shopText.setText("Shop with main menu background skins")
@@ -348,6 +370,7 @@ def shop():
 def set_main_menu():
     global main_win
     global us
+    global windowNum
 
     # if widget was not set dont try to delete it
     widget_to_delete = main_win.centralWidget()
@@ -358,6 +381,8 @@ def set_main_menu():
 
     widget = QWidget()
     widget.setGeometry(0, 0, main_win.width(), main_win.height())
+
+    windowNum = 0 #for help
 
     actSk = us.get_active_skin()
     if actSk == 0:
@@ -519,6 +544,9 @@ def gui_kostky():
     global throwTable
     global DiePlayer
     global DieEnemy
+    global windowNum
+
+    windowNum = 3 #for help
 
     dice_set_bet(1)
     nOfDice = 1
@@ -603,7 +631,7 @@ def gui_kostky():
     bet.setFixedSize(90, 30)
     bet.setValue(1)
     bet.setMinimum(1)
-    bet.setMaximum(1000)
+    bet.setMaximum(100000)
     bet.valueChanged.connect(dice_set_bet)
     layout2.addWidget(bet, 1, 6)
 
@@ -671,6 +699,7 @@ def gui_automat():
     global widget
     global us
     global bet
+    global windowNum
 
     widget_to_delete = main_win.centralWidget()
     try:
@@ -683,6 +712,8 @@ def gui_automat():
     aut_wid.setStyleSheet(".QWidget { border-image: url('SKINS/automat_background.jpg') } ")
 
     aut_wid.setGeometry(0, 0, main_win.width(), main_win.height())
+
+    windowNum = 4 #for help
 
     # main grid
     layout2 = QGridLayout(aut_wid)
@@ -792,9 +823,6 @@ def gui_automat():
     layout4.addWidget(btn, 3, 1, 3, 2, Qt.AlignTop)
     layout_for_middle.addLayout(layout4, 2, 1, 2, 2,Qt.AlignCenter)
 
-    btn_back = QPushButton(aut_wid)
-    btn_back.setText("Back")
-    btn_back.clicked.connect(set_main_menu)
 
     main_win.setCentralWidget(aut_wid)
     main_win.update()
@@ -916,6 +944,7 @@ def gui_ruleta():
     global widget
     global us
     global chosen
+    global windowNum
 
     widget_to_delete = main_win.centralWidget()
     try:
@@ -927,6 +956,8 @@ def gui_ruleta():
     rul_wid = QWidget()
     rul_wid.setStyleSheet(".QWidget { border-image: url('SKINS/roulette_bg.png') } ")
     rul_wid.setGeometry(0, 0, main_win.width(), main_win.height())
+
+    windowNum = 2 #for help
 
     # main layout
     layout = QGridLayout(rul_wid)
@@ -1037,24 +1068,6 @@ def gui_ruleta():
     btn_double.clicked.connect(double_bet)
     layout3.addWidget(btn_double, 2, 1)
 
-    # TODO: Delete
-    # show balance of user
-    balance = QLabel(rul_wid)
-    balance.setNum(us.get_balance())
-    balance.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
-    layout2.addWidget(balance, 0, 2)
-    label1 = QLabel(rul_wid)
-    label1.setText("Balance:")
-    label1.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
-    layout2.addWidget(label1, 0, 1)
-
-    # TODO: Delete
-    # button back to main menu
-    btn_back = QPushButton(rul_wid)
-    btn_back.setText("Back")
-    btn_back.clicked.connect(set_main_menu)
-    btn_back.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
-    layout2.addWidget(btn_back, 0, 0)
 
     # Buttons 4 choosing betting options
     global btn_red
